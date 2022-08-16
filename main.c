@@ -45,8 +45,8 @@ int main(int argc, char* argv[])
     // At the moment it is easy to pass a weight array to
     // graph_init() that has different dimensions to what the graph gets
     // given, and it isn't currently possible to check the dimensions
-    // of the array within graph_init() while using a primitive int array 
-    // as far as I know.
+    // of the array within graph_init() with the weight array as it currently
+    // is, as far as I know.
 
     // Initialising and printing the graph.
     graph_init(&g, 3, 3, 3, weights, MANHATTAN);
