@@ -38,9 +38,10 @@ int main(int argc, char* argv[])
     
     // TODO: Add procedures to the array type so that it is a lot
     // easier to create muiltidimensional arrays, then modify
-    // graph_init() so that it takes that custom array data type so
-    // we can assert that the defined dimensions of the graph are the
-    // same as the dimentions of the array of weights.
+    // graph_init() so that it takes that custom array data type for its 
+    // weights parameter. We will then be able to check that the defined 
+    // dimensions of the graph are the same as the dimensions of the 
+    // array of weights.
     //
     // At the moment it is easy to pass a weight array to
     // graph_init() that has different dimensions to what the graph gets
