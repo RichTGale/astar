@@ -1,3 +1,13 @@
+/**
+ * main.c
+ * 
+ * Demonstrates the use of an A* (A Star) search algorithm
+ * implementation.
+ * 
+ * Author: Richard Gale
+ * Version: 16th August, 2022
+ */
+
 #include <stdio.h>
 
 #include "node.h"
