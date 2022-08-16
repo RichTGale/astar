@@ -4,10 +4,11 @@
  * Demonstrates the use of the astar type.
  * 
  * Author: Richard Gale
- * Version: 16th August, 2022
+ * Version: 17th August, 2022
  */
 
 #include <stdio.h>
+#include <stdlib.h> // Testing
 
 #include "node.h"
 #include "graph.h"
@@ -16,7 +17,7 @@
 int main(int argc, char* argv[])
 {
     astar as;   // The astar.
-    graph g;    // The graph.
+    graph g;    // The graph.   
     int weights[3][3][3] = {    // The weights of the nodes in the graph.
         {
             {1, 3, 3},
@@ -43,7 +44,7 @@ int main(int argc, char* argv[])
     astar_init(&as, &g);
 
     // Finding the shortest path.
-    astar_search(&as, graph_get_node(g, 0,0,0), graph_get_node(g, 2,2,2));
+    astar_search(&as, graph_get_node(g, 0, 0, 0), graph_get_node(g, 2, 2, 2));
 
     // Printing the nodes that make up the shortest path.
     printf("SHORTEST PATH:\n");

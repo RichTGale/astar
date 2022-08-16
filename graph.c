@@ -6,10 +6,12 @@
  * within a search algorithm.
  *
  * Author: Richard Gale
- * Version: 15th August, 2022
+ * Version: 17th August, 2022
  */
 
 #include "graph.h"
+
+#define INVALID_COORDINATE_ERROR 1
 
 /**
  * The data contained within the graph data-structure.
@@ -87,23 +89,6 @@ void graph_free(graph* g_ref)
 }
 
 /**
- * Returns a reference to the node in the graph at 
- * the provided x, y, z coordinates.
- */
-node* graph_get_node(graph g, int x, int y, int z)
-{
-    return &(g->nodes[x][y][z]);
-}
-
-/**
- * Returns the graph's graph_style.
- */
-enum graph_styles graph_get_style(graph g)
-{
-    return g->g_style;
-}
-
-/**
  * Returns true if the provided coordinates are within 
  * the bounds of the dimentions of the graph.
  */
@@ -120,6 +105,41 @@ bool graph_valid_coord(graph g, int x , int y , int z)
         is_valid_coord = true;
     }
     return is_valid_coord;
+}
+
+/**
+ * Returns a reference to the node in the graph at 
+ * the provided x, y, z coordinates.
+ */
+node* graph_get_node(graph g, int x, int y, int z)
+{
+    node* n;    // The node at the provided coordinates.
+
+    if (graph_valid_coord(g, x, y, z))
+    {
+        // The provided coordinates are valid so we can
+        // proceed to getting the node.
+        n = &(g->nodes[x][y][z]);
+    }
+    else
+    {
+        // The provided coordinates are not valid coordinates
+        // so we're going to print an error message and exit.
+        printf("\nERROR: In function graph_get_node(): "
+                "Invalid node coordinates: { %d, %d, %d }!\n", x, y, z);
+        exit(INVALID_COORDINATE_ERROR);
+    }
+
+    // Returning the node reference
+    return n;
+}
+
+/**
+ * Returns the graph's graph_style.
+ */
+enum graph_styles graph_get_style(graph g)
+{
+    return g->g_style;
 }
 
 /**

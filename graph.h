@@ -6,12 +6,14 @@
  * a search algorithm.
  * 
  * Author: Richard Gale
- * Version: 15th August, 2022
+ * Version: 17th August, 2022
  */
 
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 
 #include "array.h"
@@ -23,10 +25,12 @@
  */
 enum graph_styles { MANHATTAN, DIAGONAL };
 
+
 /**
  * The graph data structure.
  */
 typedef struct graph_data* graph;
+
 
 /**
  * Initialises the graph.
