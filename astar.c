@@ -53,11 +53,7 @@ array astar_get_path(astar as)
 
 /**
  * Heuristic function.
- * Uses the Manhattan heuristic where the sum of 
- * the absolute differences of the provided nodes' 
- * three coordinate-axes are returned, providing an 
- * estimate of the distance between the current node
- * and the goal or end node.
+ * Returns an estimate of the distance between two graph-nodes.
  */
 int astar_h(node node_a, node node_b, enum graph_styles style)
 {
