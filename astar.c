@@ -83,7 +83,7 @@ int astar_h(node node_a, node node_b, enum graph_styles style)
 		cost = (dx + dy + dz) + (1 - 3) * min;
 	} 
 
-	// Returning the sum of the differences.
+	// Returning the estimated cost.
 	return cost;
 }
 
