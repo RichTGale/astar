@@ -26,7 +26,7 @@ struct astar_data {
  */
 void astar_init(astar* as_ref, graph* g)
 {
-    *as_ref = (astar) malloc(sizeof(struct astar_data));
+    	*as_ref = (astar) malloc(sizeof(struct astar_data));
 	(*as_ref)->g = g;
 	min_heap_init(&(*as_ref)->openset, NODE);
 	array_init(&(*as_ref)->path);
@@ -39,7 +39,7 @@ void astar_free(astar* as_ref)
 {
 	min_heap_free(&(*as_ref)->openset);
 	array_free(&(*as_ref)->path);
-    free(*as_ref);
+	free(*as_ref);
 }
 
 /**
