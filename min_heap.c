@@ -4,7 +4,7 @@
  * Data-structure and function definitions for a minimum heap.
  * 
  * Author: Richard Gale
- * Version: 16th August, 2022
+ * Version: 17th August, 2022
  */
 
 #include "min_heap.h"
@@ -92,18 +92,29 @@ void min_heapify_up(min_heap* mh_ref, int i)
 
     if (i > 0)
     {
+        // Setting the parent's index
         p = (i - 1) / 2;
+
+        // Getting the child's and the parent's references from the heap
         p_ref = array_get_data((*mh_ref)->heap, p);
         i_ref = array_get_data((*mh_ref)->heap, i);
         
         if ((*mh_ref)->type == NODE)
         {
+            // Setting values for node type
             p_val = node_get_f(*((node*) p_ref));
             i_val = node_get_f(*((node*) i_ref));
+        }
+        else if ((*mh_ref)->type == INTEGER)
+        {
+            // Setting values for integer type
+            p_val = *((int*) p_ref);
+            i_val = *((int*) i_ref);
         }
         
         if (i_val < p_val)
         {
+            // The child has a lower value than the parent so we swap them.
             array_set_data(&(*mh_ref)->heap, i, p_ref);
             array_set_data(&(*mh_ref)->heap, p, i_ref);
             min_heapify_up(mh_ref, p);
@@ -141,7 +152,12 @@ void min_heapify_down(min_heap* mh_ref, int i)
     l = (i * 2) + 1;
     r = (i * 2) + 2;
 
-    // Determining which child of the parent has the lowest value
+    // Defaulting the index of the minimum value between the parent's
+    // children to the parent's index.
+    m = i;
+
+    // Determining which child of the parent has the lowest value.
+    // There may not necessarily be any children.
     if (l < (*mh_ref)->num_elems && r < (*mh_ref)->num_elems)
     {
         l_ref = array_get_data((*mh_ref)->heap, l);
@@ -152,21 +168,30 @@ void min_heapify_down(min_heap* mh_ref, int i)
         {
             m = node_get_f(*((node*) l_ref)) < node_get_f(*((node*) r_ref)) ? l : r;
         }
-    } else if (l < (*mh_ref)->num_elems)
+        else if ((*mh_ref)->type == INTEGER)
+        {
+            m = *((int*) l_ref) < *((int*) r_ref) ? l : r;
+        }
+    } 
+    else if (l < (*mh_ref)->num_elems)
     {
         m = l;    
-    } else
-    {
-        m = i;
-    }
+    } 
 
     if (m != i)
     {
         // Getting the minimum child's value and the parent's value.
         if ((*mh_ref)->type == NODE)
         {
+            // Getting child's and parent's values from node data type
             m_val = node_get_f(*((node*) array_get_data((*mh_ref)->heap, m)));
             i_val = node_get_f(*((node*) array_get_data((*mh_ref)->heap, i)));
+        }
+        else if ((*mh_ref)->type == INTEGER)
+        {
+            // Getting child's and parent's values from integer data type
+            m_val = *((int*) array_get_data((*mh_ref)->heap, m));
+            i_val = *((int*) array_get_data((*mh_ref)->heap, i));
         }
 
         if (m_val < i_val)

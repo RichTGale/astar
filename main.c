@@ -1,8 +1,7 @@
 /**
  * main.c
  * 
- * Demonstrates the use of an A* (A Star) search algorithm
- * implementation.
+ * Demonstrates the use of the astar type.
  * 
  * Author: Richard Gale
  * Version: 16th August, 2022

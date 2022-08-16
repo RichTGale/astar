@@ -5,7 +5,7 @@
  * for a minimum heap.
  * 
  * Author: Richard Gale
- * Version: 16th August, 2022
+ * Version: 17th August, 2022
  */
 
 #ifndef MIN_HEAP_H
@@ -21,7 +21,7 @@
 /**
  * The types of data the min_heap can deal with.
  */
-enum types { NODE };
+enum types { INTEGER, NODE };
 
 /**
  * The min_heap data structure.
