@@ -35,6 +35,15 @@ int main(int argc, char* argv[])
             {1, 1, 1}
         }
     };
+    
+    // TODO: Add procedures to the array type so that it is a lot
+    // easier to create muiltidimensional arrays, then modify
+    // graph_init() so that it takes that custom array data type.
+    //
+    // At the moment it is easy to pass a weight array to
+    // graph_init() that has different dimensions to what gets
+    // defined in the astar, and it isn't possible to check the dimensions
+    // of the array within graph_init() as far as I know.
 
     // Initialising and printing the graph.
     graph_init(&g, 3, 3, 3, weights, MANHATTAN);
