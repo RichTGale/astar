@@ -24,10 +24,10 @@ struct astar_data {
 /**
  * Intialises the astar.
  */
-void astar_init(astar* as_ref, graph* g)
+void astar_init(astar* as_ref, graph* g_ref)
 {
 	*as_ref = (astar) malloc(sizeof(struct astar_data));
-	(*as_ref)->g_ref = g;
+	(*as_ref)->g_ref = g_ref;
 	min_heap_init(&(*as_ref)->openset, NODE);
 	array_init(&(*as_ref)->path);
 }
