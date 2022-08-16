@@ -14,7 +14,7 @@
  * The data contained within the astar data-structure.
  */
 struct astar_data {
-	graph* g;		// The graph.
+	graph* g;			// The graph.
 	min_heap openset;	// The openset
 	// The nodes that are the shortest path 
 	// between the starting node and the goal node.
@@ -26,7 +26,7 @@ struct astar_data {
  */
 void astar_init(astar* as_ref, graph* g)
 {
-    	*as_ref = (astar) malloc(sizeof(struct astar_data));
+	*as_ref = (astar) malloc(sizeof(struct astar_data));
 	(*as_ref)->g = g;
 	min_heap_init(&(*as_ref)->openset, NODE);
 	array_init(&(*as_ref)->path);
@@ -39,7 +39,7 @@ void astar_free(astar* as_ref)
 {
 	min_heap_free(&(*as_ref)->openset);
 	array_free(&(*as_ref)->path);
-	free(*as_ref);
+    free(*as_ref);
 }
 
 /**
@@ -72,6 +72,7 @@ int astar_h(node node_a, node node_b, enum graph_styles style)
 	dy = abs(node_get_y(node_a) - node_get_y(node_b));
 	dz = abs(node_get_z(node_a) - node_get_z(node_b));
 
+	// Calculating the estimated cost
 	if (style == MANHATTAN)
 	{
 		cost = dx + dy + dz; 
