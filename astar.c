@@ -14,7 +14,7 @@
  * The data contained within the astar data-structure.
  */
 struct astar_data {
-	graph* g;			// The graph.
+	graph* g_ref;			// The graph.
 	min_heap openset;	// The openset
 	// The nodes that are the shortest path 
 	// between the starting node and the goal node.
@@ -27,7 +27,7 @@ struct astar_data {
 void astar_init(astar* as_ref, graph* g)
 {
 	*as_ref = (astar) malloc(sizeof(struct astar_data));
-	(*as_ref)->g = g;
+	(*as_ref)->g_ref = g;
 	min_heap_init(&(*as_ref)->openset, NODE);
 	array_init(&(*as_ref)->path);
 }
@@ -139,7 +139,7 @@ void astar_search(astar* as_ref, node* start, node* end)
 		} else
 		{
 			// Create our array of neighbours of the current node
-			graph_neighbours((*as_ref)->g, current, &neighbours);
+			graph_neighbours((*as_ref)->g_ref, current, &neighbours);
 
 			while(array_size(neighbours) > 0)
 			{
@@ -157,7 +157,7 @@ void astar_search(astar* as_ref, node* start, node* end)
 					node_set_f(neighbour, 
 								tentative_g + astar_h(*neighbour, 
 								*end, 
-								graph_get_style(*(*as_ref)->g)));
+								graph_get_style(*(*as_ref)->g_ref)));
 
 					if (!min_heap_val_exists((*as_ref)->openset, neighbour))
 					{
