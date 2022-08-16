@@ -14,8 +14,8 @@
  * The data contained within the astar data-structure.
  */
 struct astar_data {
-	graph* g;				// The graph.
-	min_heap openset;		// The openset
+	graph* g;		// The graph.
+	min_heap openset;	// The openset
 	// The nodes that are the shortest path 
 	// between the starting node and the goal node.
 	array path;
