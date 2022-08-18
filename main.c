@@ -36,18 +36,8 @@ int main(int argc, char* argv[])
         }
     };
     
-    // TODO: Add procedures to the array type so that it is a lot
-    // easier to create muiltidimensional arrays, then modify
-    // graph_init() so that it takes that custom array data type for its 
-    // weights parameter. We will then be able to check that the defined 
-    // dimensions of the graph are the same as the dimensions of the 
-    // array of weights.
-    //
-    // At the moment it is easy to pass a weight array to
-    // graph_init() that has different dimensions to what the graph gets
-    // given, and it isn't currently possible to check the dimensions
-    // of the array within graph_init() with the weight array as it currently
-    // is, as far as I know.
+    // TODO: Come up with a way to check that the weights
+    // have the correct dimensions. Maybe check within graph_init()..
 
     // Initialising and printing the graph.
     graph_init(&g, 3, 3, 3, weights, MANHATTAN);
