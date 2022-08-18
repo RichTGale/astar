@@ -40,7 +40,12 @@ int main(int argc, char* argv[])
     // have the correct dimensions.
 
     // Initialising and printing the graph.
-    graph_init(&g, 3, 3, 3, weights, MANHATTAN);
+    graph_init(&g,
+    sizeof(weights[0][0])/sizeof(int), 
+    sizeof(weights[0][1])/sizeof(int), 
+    sizeof(weights[0][2])/sizeof(int), 
+    weights, 
+    MANHATTAN);
     graph_print(g);
 
     // Initialising the astar.
