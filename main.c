@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
     };
     
     // TODO: Come up with a way to check that the weights
-    // have the correct dimensions. Maybe check within graph_init()..
+    // have the correct dimensions.
 
     // Initialising and printing the graph.
     graph_init(&g, 3, 3, 3, weights, MANHATTAN);
