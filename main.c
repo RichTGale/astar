@@ -41,11 +41,11 @@ int main(int argc, char* argv[])
 
     // Initialising and printing the graph.
     graph_init(&g,
-    sizeof(weights[0][0])/sizeof(int), 
-    sizeof(weights[0][1])/sizeof(int), 
-    sizeof(weights[0][2])/sizeof(int), 
-    weights, 
-    MANHATTAN);
+        sizeof(weights[0][0])/sizeof(int), 
+        sizeof(weights[0][1])/sizeof(int), 
+        sizeof(weights[0][2])/sizeof(int), 
+        weights, 
+        MANHATTAN);
     graph_print(g);
 
     // Initialising the astar.
