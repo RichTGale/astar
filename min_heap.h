@@ -5,7 +5,7 @@
  * for a minimum heap.
  * 
  * Author: Richard Gale
- * Version: 17th August, 2022
+ * Version: 24th August, 2022
  */
 
 #ifndef MIN_HEAP_H

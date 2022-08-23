@@ -4,7 +4,7 @@
  * Data-structure and function definitions for a minimum heap.
  * 
  * Author: Richard Gale
- * Version: 17th August, 2022
+ * Version: 24th August, 2022
  */
 
 #include "min_heap.h"
@@ -139,14 +139,14 @@ void min_heap_add(min_heap* mh_ref, void* data)
  */
 void min_heapify_down(min_heap* mh_ref, int i)
 {
-    void* l_ref;    // The reference which is the left child of the parent.
-    void* r_ref;    // The reference which is the right child of the parent.
-    void* t_ref;    // Temporary reference.
+    void* l_ref;    // The reference to the left child of the parent.
+    void* r_ref;    // The reference to the right child of the parent.
+    void* t_ref;    // Temporary reference for swapping.
     int m_val;      // The minimum value out of the parent's two children.
-    int i_val;      // The value of the value in the heap at the provided index.
-    int l;          // The index of the left child of the parent.
-    int r;          // The index of the right child of the parent.
-    int m;          // The index of the minimum value out of the parent and left and right children.
+    int i_val;      // The value at the index provided to the procedure.
+    int l;          // The index of the parent's left child.
+    int r;          // The index of the parent's right child.
+    int m;          // The index of the minimum value out of the parent, left and right children.
 
     // Determining the indices of the two children of the parent value
     l = (i * 2) + 1;

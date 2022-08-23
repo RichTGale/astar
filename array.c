@@ -6,7 +6,7 @@
  * and frees memory as elements are added to it and removed from it.
  *
  * Author: Richard Gale
- * Version: 16th August, 2022
+ * Version: 23rd August, 2022
  */
 
 #include "array.h"
@@ -66,7 +66,11 @@ void* array_get_data(array head, int index)
 			head = head->next;
 		} else
 		{
-			printf("\nERROR: In function array_get_data(): index %d out of bounds!", i + 1);
+			printf(
+				"\nERROR: In function array_get_data(): "
+				"index %d out of bounds!", 
+				i + 1
+			);
 			exit(INDEX_OUT_OF_BOUNDS_ERROR);
 		}
 	}
@@ -115,7 +119,10 @@ void* array_pop_front(array* head_ref)
 		}
 	} else
 	{
-		printf("\nERROR: In function arrary_pop_front: Attempting to pop front of empty array!\n");
+		printf(
+			"\nERROR: In function arrary_pop_front: "
+			"Attempting to pop front of empty array!\n"
+		);
 		exit(EMPTY_LIST_ERROR);
 	}
 
@@ -153,7 +160,10 @@ void* array_pop_back(array* head_ref)
 		}
 	} else
 	{
-		printf("\nERROR: In function array_pop_back: Attempting to pop back of empty array!\n");
+		printf(
+			"\nERROR: In function array_pop_back: "
+			"Attempting to pop back of empty array!\n"
+		);
 		exit(EMPTY_LIST_ERROR);
 	}
 
@@ -214,7 +224,11 @@ void array_set_data(array* head_ref, int index, void* data)
 			head_ref = &(*head_ref)->next;
 		} else
 		{
-			printf("\nERROR: In function array_set_data(): index %d out of bounds!", i);
+			printf(
+				"\nERROR: In function array_set_data(): "
+				"index %d out of bounds!", 
+				i
+			);
 			exit(INDEX_OUT_OF_BOUNDS_ERROR);
 		}
 	}
