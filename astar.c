@@ -5,7 +5,7 @@
  * A* (A Star) search algorithm.
  * 
  * Author: RIchard Gale
- * Version: 15th August, 2022-
+ * Version: 25th August, 2022
  */
 
 #include "astar.h"
@@ -55,13 +55,13 @@ array astar_get_path(astar as)
  * Heuristic function.
  * Returns an estimate of the distance between two graph-nodes.
  */
-int astar_h(node node_a, node node_b, enum graph_styles style)
+uint32_t astar_h(node node_a, node node_b, enum graph_styles style)
 {
-	int cost;	// The estimated distance between the two nodes
-	int dx;		// The absolute difference of the x axes.
-	int dy;		// The absolute difference of the y axes.
-	int dz;		// The absolute difference of the z axes.
-	int min; 	// The minimum absolute difference of all axes.
+	uint32_t cost;	// The estimated distance between the two nodes
+	uint16_t dx;	// The absolute difference of the x axes.
+	uint16_t dy;	// The absolute difference of the y axes.
+	uint16_t dz;	// The absolute difference of the z axes.
+	uint16_t min; 	// The minimum absolute difference out of all the axes.
 	
 	// Calculating the absolute differences of each axis of the two nodes.
 	dx = abs(node_get_x(node_a) - node_get_x(node_b));
@@ -109,7 +109,7 @@ void astar_search(astar* as_ref, node* start, node* end)
 	array neighbours;	// The neighbours of the current node
 	node* neighbour;	// The current neighbour of the current node
 	bool path_found = false;	// Whether a path has been found
-	int tentative_g;	// Distance from start to the neighbour through the current node
+	uint32_t tentative_g;	// Distance from start to the neighbour through the current node
 
 	// Initialising the array used to store the neighbours of the current node
 	array_init(&neighbours);
@@ -140,7 +140,7 @@ void astar_search(astar* as_ref, node* start, node* end)
 			while(array_size(neighbours) > 0)
 			{
 				neighbour = array_pop_front(&neighbours);
-				tentative_g = node_get_g(*current) + node_get_w(*neighbour);
+				tentative_g = node_get_g(*current) +  (uint32_t) node_get_w(*neighbour);
 				if (tentative_g < node_get_g(*neighbour))
 				{
 					// This path to the neighbour is better than any previous one
@@ -151,9 +151,10 @@ void astar_search(astar* as_ref, node* start, node* end)
 					// Setting the estimation for total cost of the path if it 
 					// goes through neighbour
 					node_set_f(neighbour, 
-								tentative_g + astar_h(*neighbour, 
-								*end, 
-								graph_get_style(*(*as_ref)->g_ref)));
+								tentative_g + 
+								astar_h(*neighbour, 
+										*end, 
+										graph_get_style(*(*as_ref)->g_ref)));
 
 					if (!min_heap_val_exists((*as_ref)->openset, neighbour))
 					{

@@ -4,11 +4,11 @@
  * Demonstrates the use of the astar type.
  * 
  * Author: Richard Gale
- * Version: 17th August, 2022
+ * Version: 25th August, 2022
  */
 
 #include <stdio.h>
-#include <stdlib.h> // Testing
+#include <stdint.h>
 
 #include "node.h"
 #include "graph.h"
@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
 {
     astar as;   // The astar.
     graph g;    // The graph.   
-    int weights[3][3][3] = {    // The weights of the nodes in the graph.
+    uint8_t weights[3][3][3] = {    // The weights of the nodes in the graph.
         {
             {1, 3, 3},
             {3, 3, 3},
@@ -36,16 +36,13 @@ int main(int argc, char* argv[])
         }
     };
     
-    // TODO: Come up with a way to check that the weights
-    // have the correct dimensions.
-
     // Initialising and printing the graph.
     graph_init(&g,
-        sizeof(weights[0][0])/sizeof(int), 
-        sizeof(weights[0][1])/sizeof(int), 
-        sizeof(weights[0][2])/sizeof(int), 
-        weights, 
-        MANHATTAN);
+            (uint16_t) sizeof(weights[0][0]) / sizeof(uint8_t), 
+            (uint16_t) sizeof(weights[0][1]) / sizeof(uint8_t), 
+            (uint16_t) sizeof(weights[0][2]) / sizeof(uint8_t), 
+            weights, 
+            MANHATTAN);
     graph_print(g);
 
     // Initialising the astar.

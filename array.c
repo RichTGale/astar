@@ -1,12 +1,12 @@
 /**
  * array.c
  *
- * Data-structure and procedure definitions for a
- * singly-linked-list, an array that dynamically allocates 
- * and frees memory as elements are added to it and removed from it.
+ * Data-structure and procedure definitions for a singly-linked-list, 
+ * an array that dynamically allocates and frees memory as elements
+ * are added to it and removed from it.
  *
  * Author: Richard Gale
- * Version: 23rd August, 2022
+ * Version: 25th August, 2022
  */
 
 #include "array.h"
@@ -57,9 +57,9 @@ void array_free(array* a_ref)
  * Returns the data in the provided array at the element
  * at the provided index.
  */ 
-void* array_get_data(array head, int index)
+void* array_get_data(array head, uint32_t index)
 {
-	for (int i = 0; i < index; i++)
+	for (uint32_t i = 0; i < index; i++)
 	{
 		if (head->next != NULL)
 		{
@@ -80,9 +80,9 @@ void* array_get_data(array head, int index)
 /**
  * Returns the number of elements in the provided array.
  */
-int array_size(array head)
+uint32_t array_size(array head)
 {
-    int size = 0; // The number of elements in the array
+    uint32_t size = 0; // The number of elements in the array
 
 	if (head->data != NULL)
 	{
@@ -136,7 +136,7 @@ void* array_pop_front(array* head_ref)
 void* array_pop_back(array* head_ref)
 {
 	void* back;		// The data contained in the back element
-	int size;		// The number of elements in the array
+	uint32_t size;		// The number of elements in the array
 
 	size = array_size(*head_ref);
 
@@ -215,9 +215,9 @@ void array_push_back(array* head_ref, void* data)
  * Sets the data in the element at the provided index of the
  * array at the provided array reference.
  */
-void array_set_data(array* head_ref, int index, void* data)
+void array_set_data(array* head_ref, uint32_t index, void* data)
 {
-	for (int i = 0; i < index; i++)
+	for (uint32_t i = 0; i < index; i++)
 	{
 		if ((*head_ref)->next != NULL)
 		{

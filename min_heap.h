@@ -1,11 +1,10 @@
 /**
  * min_heap.h
  * 
- * publicly available data-structure and procedure declarations 
- * for a minimum heap.
+ * Data-structure and procedure declarations for a minimum heap.
  * 
  * Author: Richard Gale
- * Version: 24th August, 2022
+ * Version: 25th August, 2022
  */
 
 #ifndef MIN_HEAP_H
@@ -14,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "array.h"
 #include "node.h"

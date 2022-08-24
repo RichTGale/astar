@@ -1,12 +1,12 @@
 /**
  * array.h
  *
- * Publicly available data-structure and procedure declarations
- * for a singly-linked-list, an array that dynamically allocates
- * and frees memory as elements are added to it and removed from it.
+ * Data-structure and procedure declarations for a singly-linked-list, 
+ * an array that dynamically allocates and frees memory as elements 
+ * are added to it and removed from it.
  *
  * Author: Richard Gale
- * Version: 23rd August, 2022
+ * Version: 25th August, 2022
  */
 
 #ifndef ARRAY_H
@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 /**
  * The array data-structure.
@@ -36,12 +37,12 @@ void array_free(array* a_ref);
  * Returns the data in the provided array at the element
  * at the provided index.
  */ 
-void* array_get_data(array head, int index);
+void* array_get_data(array head, uint32_t index);
 
 /**
  * Returns the number of elements in the provided array.
  */
-int array_size(array head);
+uint32_t array_size(array head);
 
 /**
  * Removes the first element in the array at the provided
@@ -71,6 +72,6 @@ void array_push_back(array* head_ref, void* data);
  * Sets the data in the element at the provided index of the
  * array at the provided array reference.
  */
-void array_set_data(array* head_ref, int index, void* data);
+void array_set_data(array* head_ref, uint32_t index, void* data);
 
 #endif // ARRAY_H

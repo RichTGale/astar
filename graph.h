@@ -2,11 +2,10 @@
  * graph.h
  * 
  * Data-structure and procedure declarations for a 
- * three-dimensional graph or map. Typically used within 
- * a search algorithm.
+ * three-dimensional weighted graph.
  * 
  * Author: Richard Gale
- * Version: 17th August, 2022
+ * Version: 25th August, 2022
  */
 
 #ifndef GRAPH_H
@@ -36,8 +35,10 @@ typedef struct graph_data* graph;
  * Initialises the graph.
  */
 void graph_init(graph* g_ref, 
-                int x_size, int y_size, int z_size, 
-                int* weights,
+                uint16_t x_size, 
+                uint16_t y_size, 
+                uint16_t z_size, 
+                uint8_t* weights,
                 enum graph_styles g_style);
 
 /**
@@ -49,7 +50,7 @@ void graph_free(graph* g);
  * Returns a reference to the node in the graph at 
  * the provided x, y, z coordinates.
  */
-node* graph_get_node(graph g, int x, int y, int z);
+node* graph_get_node(graph g, uint16_t x, uint16_t y, uint16_t z);
 
 /**
  * Returns the graph's graph_style.
