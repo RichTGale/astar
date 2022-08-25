@@ -59,7 +59,9 @@ void array_free(array* a_ref)
  */ 
 void* array_get_data(array head, uint32_t index)
 {
-	for (uint32_t i = 0; i < index; i++)
+	uint32_t elem; // The current element of the array. 
+
+	for (elem = 0; elem < index; elem++)
 	{
 		if (head->next != NULL)
 		{
@@ -69,7 +71,7 @@ void* array_get_data(array head, uint32_t index)
 			printf(
 				"\nERROR: In function array_get_data(): "
 				"index %d out of bounds!", 
-				i + 1
+				elem + 1
 			);
 			exit(INDEX_OUT_OF_BOUNDS_ERROR);
 		}
@@ -125,7 +127,6 @@ void* array_pop_front(array* head_ref)
 		);
 		exit(EMPTY_LIST_ERROR);
 	}
-
 	return front;
 }
 

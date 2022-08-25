@@ -17,7 +17,7 @@
 struct min_heap_data {
     array heap;         // Stores the values in the heap.
     enum types type;    // The type of data the min_heap stores
-    int num_elems;      // The number of elements in the heap.
+    uint32_t num_elems; // The number of elements in the heap.
 };
 
 /**
@@ -47,8 +47,9 @@ void min_heap_free(min_heap* mh_ref)
 bool min_heap_val_exists(min_heap mh, void* val)
 {
     bool val_exists = false;    // Whether the value is already in the min_heap.
+    uint32_t i;                 // The index of the element in the heap we are comparing. 
 
-    for (int i = 0; i < array_size(mh->heap); i++)
+    for (i = 0; i < array_size(mh->heap); i++)
     {
         if (val == array_get_data(mh->heap, i))
         {
@@ -228,13 +229,15 @@ void* min_heap_pop_min(min_heap* mh_ref)
         array_set_data(&(*mh_ref)->heap, 0, array_pop_back(&(*mh_ref)->heap));
         (*mh_ref)->num_elems--;
         min_heapify_down(mh_ref, 0);
-    } else if ((*mh_ref)->num_elems == 1)
+    } 
+    else if ((*mh_ref)->num_elems == 1)
     {
         min = array_pop_back(&(*mh_ref)->heap);
         (*mh_ref)->num_elems--;
-    } else
+    } 
+    else
     {
-        printf("ERROR: In function pop_min(): heap is empty!");
+        printf("ERROR: In function min_heap_pop_min(): heap is empty!");
         exit(HEAP_EMPTY_ERROR);
     }
 
