@@ -19,8 +19,15 @@ struct node_data {
     uint16_t z;  // z coordinate.
     uint32_t f;  // Estimated cost from start to end node after going through this node.
     uint32_t g;  // Cost from start node to this node.
-    array neighbours;  // The nodes in the graph that this node is connected to.
+    array edges;  // The edges of the neighbouring nodes.
 };
+
+void edge_init(edge** e_ref, node* n_ref, uint8_t weight)
+{
+    *e_ref = (edge*) malloc(sizeof(edge));
+    (**e_ref).n_ref = n_ref;
+    (**e_ref).weight = weight;
+}
 
 /**
  * Initialises the node at the provided reference.
@@ -34,7 +41,7 @@ void node_init(node* n_ref, uint16_t x, uint16_t y, uint16_t z)
     (*n_ref)->z = z;
     (*n_ref)->f = UINT32_MAX;
     (*n_ref)->g = UINT32_MAX;
-    array_init(&(*n_ref)->neighbours);
+    array_init(&(*n_ref)->edges);
 }
 
 /**
@@ -96,9 +103,9 @@ uint32_t node_get_g(node n)
 }
 
 
-array* node_get_neighbours(node* n_ref)
+array* node_get_edges(node* n_ref)
 {
-    return &(*n_ref)->neighbours;
+    return &(*n_ref)->edges;
 }
 
 /**
@@ -133,14 +140,15 @@ void node_set_g(node* n, uint32_t g)
  * it as a neighbour.
  * Note, this creates a one-way connection.
  */
-void node_add_neighbour(node* n_ref, node* neighbour)
+void node_add_edge(node* na_ref, node* nb_ref, uint8_t weight)
 {
     bool already_neighbours = false;    // Whether the two provided nodes are already neighbours
+    edge* e_ref;    // The edge seperating the nodes
 
     // Determining if the nodes are already neighbours.
-    for (int n = 0 ; n < array_size((*n_ref)->neighbours); n++)
+    for (int n = 0 ; n < array_size((*na_ref)->edges); n++)
     {
-        if (neighbour == array_get_data((*n_ref)->neighbours, n))
+        if (nb_ref == (*((edge*) array_get_data((*na_ref)->edges, n))).n_ref)
         {
             already_neighbours = true;
 
@@ -149,16 +157,17 @@ void node_add_neighbour(node* n_ref, node* neighbour)
 
     if (!already_neighbours)
     {
-        // Adding the node as a neighbour.
-        array_push_back(&(*n_ref)->neighbours, neighbour);
+        // Initialising and adding the neighbour as an edge.
+        edge_init(&e_ref, nb_ref, weight);
+        array_push_back(&(*na_ref)->edges, e_ref);
     }
     else
     {
         // The node was already a neighbour so we are printing a warning.
-        printf("\nWARNING: In function node_add_neighbour(): "
+        printf("\nWARNING: In function node_add_edge(): "
             "Node at memory address %p was already a neighbour of "
             "the node at memory address %p and wan't added again!\n", 
-            neighbour, n_ref);
+            nb_ref, na_ref);
     }
 }
 
@@ -167,30 +176,29 @@ void node_add_neighbour(node* n_ref, node* neighbour)
  * them from considered neighbours.
  * Note, this is a one-way disconnection.
  */
-void node_remove_neighbour(node* n_ref, node* neighbour)
+void node_remove_edge(node* na_ref, node* nb_ref)
 {
     bool already_neighbours = false;    // Whether the two provided nodes are already neighbours.
 
     // Finding the neighbour to remove.
-    for (int n = 0 ; n < array_size((*n_ref)->neighbours); n++)
+    for (int e = 0 ; e < array_size((*na_ref)->edges); e++)
     {
-        if (neighbour == array_get_data((*n_ref)->neighbours, n))
+        if (nb_ref == (*((edge*) array_get_data((*na_ref)->edges, e))).n_ref)
         {
             already_neighbours = true;
 
-            // Removing the neighbour
-            array_pop_data(&(*n_ref)->neighbours, n);
+            // Removing the edge
+            array_pop_data(&(*na_ref)->edges, e);
         }
     }
 
-    printf("ARRAYSIZE:%d\n", array_size((*n_ref)->neighbours));
     if (!already_neighbours)
     {
         // The node wasn't a neighbour so we are printing a warning.
-        printf("\nWARNING: In function node_remove_neighbour(): "
+        printf("\nWARNING: In function node_remove_edge(): "
             "Node at memory address %p wasn't a neighbour of "
             "the node at memory address %p so it wasn't removed!\n", 
-            neighbour, n_ref);
+            nb_ref, na_ref);
     }
 }
 

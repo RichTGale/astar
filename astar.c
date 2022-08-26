@@ -106,8 +106,7 @@ void astar_reconstruct_path(astar* as, node* start, node* current)
 void astar_search(astar* as_ref, node* start, node* end)
 {
 	node* current;	// The current node on the path
-	// array neighbours;	// The neighbours of the current node
-	node* neighbour;	// The current neighbour of the current node
+	edge* e_ref;	// The edge sepearating the current node and neighbour.
 	bool path_found = false;	// Whether a path has been found
 	uint32_t tentative_g;	// Distance from start to the neighbour through the current node
 
@@ -137,36 +136,29 @@ void astar_search(astar* as_ref, node* start, node* end)
 			// Create our array of neighbours of the current node
 			// graph_neighbours((*as_ref)->g_ref, current, &neighbours);
 
-			for (int i = 0; i < array_size(*(node_get_neighbours(current))); i++)
+			for (int i = 0; i < array_size(*(node_get_edges(current))); i++)
 			{
-				neighbour = array_get_data(*(node_get_neighbours(current)), i);
-
-				// We use the heuristic function to get the weight/distance
-				// between the current node and its neighbour/connected node.
-				tentative_g = node_get_g(*current) + astar_h(
-														*current, 
-														*neighbour,
-														graph_get_style(*(*as_ref)->g_ref));
-									
-				if (tentative_g < node_get_g(*neighbour))
+				e_ref = array_get_data(*(node_get_edges(current)), i);
+				tentative_g = node_get_g(*current) + (*e_ref).weight;
+				if (tentative_g < node_get_g(*(*e_ref).n_ref))
 				{
 					// This path to the neighbour is better than any previous one
 					// so we are recording it.
-					node_set_came_from(neighbour, current);
-					node_set_g(neighbour, tentative_g);
+					node_set_came_from((*e_ref).n_ref, current);
+					node_set_g((*e_ref).n_ref, tentative_g);
 
 					// Setting the estimation for total cost of the path if it 
 					// goes through neighbour
-					node_set_f(neighbour, 
+					node_set_f((*e_ref).n_ref, 
 								tentative_g + 
-								astar_h(*neighbour, 
+								astar_h(*(*e_ref).n_ref, 
 										*end, 
 										graph_get_style(*(*as_ref)->g_ref)));
 
-					if (!min_heap_val_exists((*as_ref)->openset, neighbour))
+					if (!min_heap_val_exists((*as_ref)->openset, (*e_ref).n_ref))
 					{
 						// Adding the neighbour to the heap
-						min_heap_add(&(*as_ref)->openset, neighbour);
+						min_heap_add(&(*as_ref)->openset, (*e_ref).n_ref);
 					}
 				}
 			}

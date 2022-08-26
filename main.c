@@ -25,10 +25,10 @@ int main(int argc, char* argv[])
 
     // Connecting the start node to the graph's central node.
     graph_connect_node(
-        graph_get_node(g, 0, 0, 0),  graph_get_node(g, 1, 1, 1));
+        graph_get_node(g, 0, 0, 0),  graph_get_node(g, 1, 1, 1), 1);
 
-    // Disconnecting the graph's central node from the node that
-    // the next node the algorithm usually chooses to take.
+    // Disconnecting the graph's central node from the
+    // next node the algorithm usually chooses to take.
     graph_disconnect_node(
         graph_get_node(g, 1, 1, 1),  graph_get_node(g, 2, 1, 1));
 

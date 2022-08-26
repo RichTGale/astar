@@ -56,7 +56,7 @@ node* graph_get_node(graph g, uint16_t x, uint16_t y, uint16_t z);
  * it as a neighbour.
  * Note, this creates a one-way connection.
  */
-void graph_connect_node(node* node_a, node* node_b);
+void graph_connect_node(node* node_a, node* node_b, uint8_t weight);
 
 /**
  * Disconnects one graph node from another, stopping
