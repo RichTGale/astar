@@ -4,7 +4,7 @@
  * Data structure and procedure declarations for a weighted graph node.
  * 
  * Author: Richard Gale
- * Version: 25th August, 2022 
+ * Version: 26th August, 2022 
  */
 
 #ifndef NODE_H
@@ -13,7 +13,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <math.h>
+
+#include "array.h"
 
 /**
  * The node data-structure.
@@ -23,7 +26,7 @@ typedef struct node_data* node;
 /**
  * Initialises the node at the provided reference.
  */
-void node_init(node* n_ref, uint16_t x, uint16_t y, uint16_t z, uint8_t weight);
+void node_init(node* n_ref, uint16_t x, uint16_t y, uint16_t z);
 
 /**
  * Frees the memory allocated to the node at the provided reference.
@@ -62,10 +65,8 @@ uint32_t node_get_f(node n);
  */
 uint32_t node_get_g(node n);
 
-/**
- * Returns the weight of the provided node.
- */
-uint8_t node_get_w(node n);
+
+array* node_get_neighbours(node* n_ref);
 
 /**
  * Sets the node at the provided reference as being the node 
@@ -84,6 +85,27 @@ void node_set_f(node* n, uint32_t f);
  * the node at the provided reference.
  */
 void node_set_g(node* n, uint32_t g);
+
+/**
+ * Adds a connection from one node to another, considering 
+ * it as a neighbour.
+ * Note, this creates a one-way connection.
+ */
+void node_add_neighbour(node* n_ref, node* neighbour);
+
+/**
+ * Removes a connection from node from another, stopping
+ * them from considered neighbours.
+ * Note, this is a one-way disconnection.
+ */
+void node_add_neighbour(node* n_ref, node* neighbour);
+
+/**
+ * Removes a connection from node from another, stopping
+ * them from considered neighbours.
+ * Note, this is a one-way disconnection.
+ */
+void node_remove_neighbour(node* n_ref, node* neighbour);
 
 /**
  * Prints the node.

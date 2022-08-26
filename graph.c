@@ -5,7 +5,7 @@
  * a three-dimensional weighted graph. 
  *
  * Author: Richard Gale
- * Version: 25th August, 2022
+ * Version: 26th August, 2022
  */
 
 #include "graph.h"
@@ -22,81 +22,6 @@ struct graph_data {
     uint16_t z_size;
     enum graph_styles g_style;
 };
-
-/**
- * Initialises the graph.
- */
-void graph_init(graph* g_ref, 
-                uint16_t x_size, 
-                uint16_t y_size, 
-                uint16_t z_size, 
-                uint8_t* weights,
-                enum graph_styles g_style)
-{
-    uint16_t x; // Current x coordinate
-    uint16_t y; // Current y coordinate
-    uint16_t z; // Current z coordinate
-    
-
-    // Allocating memory for the graph
-    *g_ref = (graph) malloc(sizeof(struct graph_data));
-    
-    // Initialising graph nodes
-    (*g_ref)->nodes = (node***) malloc(x_size * sizeof(node**));
-    for (x = 0; x < x_size; x++)
-    {
-        (*g_ref)->nodes[x] = (node**) malloc(y_size * sizeof(node*));
-        for (y = 0; y < y_size; y++)
-        {
-            (*g_ref)->nodes[x][y] = (node*) malloc(z_size * sizeof(node));
-            for (z = 0; z < z_size; z++)
-            {
-                node_init(&(*g_ref)->nodes[x][y][z], 
-                            x, 
-                            y, 
-                            z, 
-                            weights[(x * y_size + y) * z_size + z]);
-            }
-        }
-    }
-
-    // Storing the graph dimensions
-    (*g_ref)->x_size = x_size;
-    (*g_ref)->y_size = y_size;
-    (*g_ref)->z_size = z_size;
-
-    // Setting the way in which graph-nodes will be considered
-    // neighbours of other graph-nodes
-    (*g_ref)->g_style = g_style;
-}
-
-/**
- * Frees the memory allocated to the graph.
- */
-void graph_free(graph* g_ref)
-{
-    uint16_t x; // Current x coordinate
-    uint16_t y; // Current y coordinate
-    uint16_t z; // Current z coordinate
-
-    // Freeing the nodes
-    for (x = 0; x < (*g_ref)->x_size; x++)
-    {
-        for (y = 0; y < (*g_ref)->y_size; y++)
-        {
-            for (z = 0; z < (*g_ref)->z_size; z++)
-            {
-                node_free(&(*g_ref)->nodes[x][y][z]);
-            }
-            free((*g_ref)->nodes[x][y]);
-        }
-        free((*g_ref)->nodes[x]);
-    }
-    free((*g_ref)->nodes);
-
-    // Freeing the graph
-    free(*g_ref);
-}
 
 /**
  * Returns true if the provided coordinates are within 
@@ -142,14 +67,6 @@ node* graph_get_node(graph g, uint16_t x, uint16_t y, uint16_t z)
 
     // Returning the node reference
     return n;
-}
-
-/**
- * Returns the graph's graph_style.
- */
-enum graph_styles graph_get_style(graph g)
-{
-    return g->g_style;
 }
 
 /**
@@ -220,6 +137,123 @@ void graph_neighbours(graph* g, node* node, array* neighbours)
         }
     } 
 }
+
+/**
+ * Initialises the graph.
+ */
+void graph_init(graph* g_ref, 
+                uint16_t x_size, 
+                uint16_t y_size, 
+                uint16_t z_size, 
+                enum graph_styles g_style)
+{
+    uint16_t x; // Current x coordinate
+    uint16_t y; // Current y coordinate
+    uint16_t z; // Current z coordinate
+    
+
+    // Allocating memory for the graph
+    *g_ref = (graph) malloc(sizeof(struct graph_data));
+    
+    // Initialising graph nodes
+    (*g_ref)->nodes = (node***) malloc(x_size * sizeof(node**));
+    for (x = 0; x < x_size; x++)
+    {
+        (*g_ref)->nodes[x] = (node**) malloc(y_size * sizeof(node*));
+        for (y = 0; y < y_size; y++)
+        {
+            (*g_ref)->nodes[x][y] = (node*) malloc(z_size * sizeof(node));
+            for (z = 0; z < z_size; z++)
+            {
+                node_init(&(*g_ref)->nodes[x][y][z], 
+                            x, 
+                            y, 
+                            z);
+            }
+        }
+    }
+
+    // Storing the graph dimensions
+    (*g_ref)->x_size = x_size;
+    (*g_ref)->y_size = y_size;
+    (*g_ref)->z_size = z_size;
+
+    // Setting the way in which graph-nodes will be considered
+    // neighbours of other graph-nodes
+    (*g_ref)->g_style = g_style;
+
+    // Initialising graph nodes
+    for (x = 0; x < x_size; x++)
+    {
+        for (y = 0; y < y_size; y++)
+        {
+            for (z = 0; z < z_size; z++)
+            {
+                graph_neighbours(g_ref, 
+                                    &(*g_ref)->nodes[x][y][z], 
+                                    node_get_neighbours(&(*g_ref)->nodes[x][y][z]));
+            }
+        }
+    }
+}
+
+/**
+ * Frees the memory allocated to the graph.
+ */
+void graph_free(graph* g_ref)
+{
+    uint16_t x; // Current x coordinate
+    uint16_t y; // Current y coordinate
+    uint16_t z; // Current z coordinate
+
+    // Freeing the nodes
+    for (x = 0; x < (*g_ref)->x_size; x++)
+    {
+        for (y = 0; y < (*g_ref)->y_size; y++)
+        {
+            for (z = 0; z < (*g_ref)->z_size; z++)
+            {
+                node_free(&(*g_ref)->nodes[x][y][z]);
+            }
+            free((*g_ref)->nodes[x][y]);
+        }
+        free((*g_ref)->nodes[x]);
+    }
+    free((*g_ref)->nodes);
+
+    // Freeing the graph
+    free(*g_ref);
+}
+
+/**
+ * Adds a connection from one graph node to another, considering 
+ * it as a neighbour.
+ * Note, this creates a one-way connection.
+ */
+void  graph_connect_node(node* node_a, node* node_b)
+{
+    node_add_neighbour(node_a, node_b);
+}
+
+/**
+ * Disconnects one graph node from another, stopping
+ * them from considered neighbours.
+ * Note, this is a one-way disconnection.
+ */
+void graph_disconnect_node(node* node_a, node* node_b) 
+{
+    node_remove_neighbour(node_a, node_b);
+}
+
+
+/**
+ * Returns the graph's graph_style.
+ */
+enum graph_styles graph_get_style(graph g)
+{
+    return g->g_style;
+}
+
 
 /**
  * Prints the graph.

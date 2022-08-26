@@ -5,7 +5,7 @@
  * three-dimensional weighted graph.
  * 
  * Author: Richard Gale
- * Version: 25th August, 2022
+ * Version: 26th August, 2022
  */
 
 #ifndef GRAPH_H
@@ -38,7 +38,6 @@ void graph_init(graph* g_ref,
                 uint16_t x_size, 
                 uint16_t y_size, 
                 uint16_t z_size, 
-                uint8_t* weights,
                 enum graph_styles g_style);
 
 /**
@@ -53,14 +52,23 @@ void graph_free(graph* g);
 node* graph_get_node(graph g, uint16_t x, uint16_t y, uint16_t z);
 
 /**
+ * Adds a connection from one graph node to another, considering 
+ * it as a neighbour.
+ * Note, this creates a one-way connection.
+ */
+void graph_connect_node(node* node_a, node* node_b);
+
+/**
+ * Disconnects one graph node from another, stopping
+ * them from considered neighbours.
+ * Note, this is a one-way disconnection.
+ */
+void graph_disconnect_node(node* node_a, node* node_b);
+
+/**
  * Returns the graph's graph_style.
  */
 enum graph_styles graph_get_style(graph g);
-
-/**
- * Adds the provided node's neighbouring nodes to the provided array.
- */
-void graph_neighbours(graph* g, node* node, array* neighbours);
 
 /**
  * Prints the graph.

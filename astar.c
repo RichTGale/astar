@@ -5,7 +5,7 @@
  * A* (A Star) search algorithm.
  * 
  * Author: RIchard Gale
- * Version: 25th August, 2022
+ * Version: 26th August, 2022
  */
 
 #include "astar.h"
@@ -106,13 +106,13 @@ void astar_reconstruct_path(astar* as, node* start, node* current)
 void astar_search(astar* as_ref, node* start, node* end)
 {
 	node* current;	// The current node on the path
-	array neighbours;	// The neighbours of the current node
+	// array neighbours;	// The neighbours of the current node
 	node* neighbour;	// The current neighbour of the current node
 	bool path_found = false;	// Whether a path has been found
 	uint32_t tentative_g;	// Distance from start to the neighbour through the current node
 
 	// Initialising the array used to store the neighbours of the current node
-	array_init(&neighbours);
+	// array_init(&neighbours);
 
 	// Adding the start node to the minimum heap
 	min_heap_add(&(*as_ref)->openset, start);
@@ -135,12 +135,19 @@ void astar_search(astar* as_ref, node* start, node* end)
 		} else
 		{
 			// Create our array of neighbours of the current node
-			graph_neighbours((*as_ref)->g_ref, current, &neighbours);
+			// graph_neighbours((*as_ref)->g_ref, current, &neighbours);
 
-			while(array_size(neighbours) > 0)
+			for (int i = 0; i < array_size(*(node_get_neighbours(current))); i++)
 			{
-				neighbour = array_pop_front(&neighbours);
-				tentative_g = node_get_g(*current) +  (uint32_t) node_get_w(*neighbour);
+				neighbour = array_get_data(*(node_get_neighbours(current)), i);
+
+				// We use the heuristic function to get the weight/distance
+				// between the current node and its neighbour/connected node.
+				tentative_g = node_get_g(*current) +  1;//astar_h(
+													//	*current, 
+													//	*neighbour,
+													//	graph_get_style(*(*as_ref)->g_ref));
+									
 				if (tentative_g < node_get_g(*neighbour))
 				{
 					// This path to the neighbour is better than any previous one
@@ -165,7 +172,7 @@ void astar_search(astar* as_ref, node* start, node* end)
 			}
 		}
 	}
-	array_free(&neighbours);
+	// array_free(&neighbours);
 }
 
 
