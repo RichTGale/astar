@@ -143,10 +143,10 @@ void astar_search(astar* as_ref, node* start, node* end)
 
 				// We use the heuristic function to get the weight/distance
 				// between the current node and its neighbour/connected node.
-				tentative_g = node_get_g(*current) +  1;//astar_h(
-													//	*current, 
-													//	*neighbour,
-													//	graph_get_style(*(*as_ref)->g_ref));
+				tentative_g = node_get_g(*current) + astar_h(
+														*current, 
+														*neighbour,
+														graph_get_style(*(*as_ref)->g_ref));
 									
 				if (tentative_g < node_get_g(*neighbour))
 				{
