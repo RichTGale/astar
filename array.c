@@ -6,7 +6,7 @@
  * are added to it and removed from it.
  *
  * Author: Richard Gale
- * Version: 25th August, 2022
+ * Version: 26th August, 2022
  */
 
 #include "array.h"
@@ -70,7 +70,7 @@ void* array_get_data(array head, uint32_t index)
 		{
 			printf(
 				"\nERROR: In function array_get_data(): "
-				"index %d out of bounds!", 
+				"index %d out of bounds!\n", 
 				elem + 1
 			);
 			exit(INDEX_OUT_OF_BOUNDS_ERROR);
@@ -189,6 +189,45 @@ void array_push_front(array* head_ref, void* data)
 		new->next = *head_ref;
 		*head_ref = new;
 	}
+}
+
+/**
+ * Removes the element at the provided index and returns it.
+ */
+void* array_pop_data(array* head_ref, uint32_t index)
+{
+	array next;	// A copy of the array starting from the second element.
+	void* data;	// The data to return.
+	uint32_t size = array_size(*head_ref); // The size of the array.
+
+	if (index < size)
+	{
+		for (int elem = 0; elem < size; elem++)
+		{
+			if (elem == index)
+			{
+				data = (*head_ref)->data;
+				next  = (*head_ref)->next;
+				array_free_elem(head_ref);
+				*head_ref = next;
+				size = 0;	// Setting size to zero to break from the loop.
+			}
+			else
+			{
+				head_ref = &(*head_ref)->next;
+			}
+		}
+	}
+	else
+	{
+		printf(
+			"\nERROR: In function array_pop_data(): "
+			"index %d out of bounds!\n", 
+			index
+			);
+		exit(INDEX_OUT_OF_BOUNDS_ERROR);
+	}
+	return data;
 }
 
 /**
