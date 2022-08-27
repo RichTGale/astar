@@ -24,17 +24,6 @@
  */
 typedef struct node_data* node;
 
-// /**
-//  * The edge data structure.
-//  * Reprresents the edge of a node.
-//  */
-// typedef struct {
-//     node* n_ref;    // A reference to the neighbour that the edge belongs to.
-//     uint8_t weight; // The weight of the edge.
-// } edge;
-
-// void edge_init(edge** e_ref, node* n_ref, uint8_t weight);
-
 /**
  * Initialises the node at the provided reference.
  */

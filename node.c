@@ -206,7 +206,8 @@ void node_add_edge(node* from_ref, node* to_ref, uint8_t weight)
         printf("\nWARNING: In function node_add_edge(): "
             "Node at coords (%d,%d,%d) was already a neighbour of the "
             "node at coords (%d,%d,%d) and wasn't added again!\n", 
-            to_ref, from_ref);
+            node_get_x(*to_ref), node_get_y(*to_ref), node_get_z(*to_ref), 
+            node_get_x(*from_ref), node_get_y(*from_ref), node_get_z(*from_ref));
     }
 }
 
@@ -244,7 +245,8 @@ void node_remove_edge(node* from_ref, node* to_ref)
         printf("\nWARNING: In function node_remove_edge(): "
             "Node at coords (%d,%d,%d) wasn't a neighbour of the "
             "node at coords (%d,%d,%d) so it wasn't removed!\n", 
-            to_ref, from_ref);
+            node_get_x(*to_ref), node_get_y(*to_ref), node_get_z(*to_ref), 
+            node_get_x(*from_ref), node_get_y(*from_ref), node_get_z(*from_ref));
     }
 }
 
