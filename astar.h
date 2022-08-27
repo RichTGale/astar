@@ -5,7 +5,7 @@
  * an A* (A Star) search algorithm.
  * 
  * Author: Richard Gale
- * Version: 26th August, 2022
+ * Version: 28th August, 2022
  */
 
 #ifndef ASTAR_H
@@ -13,6 +13,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "array.h"
 #include "node.h"

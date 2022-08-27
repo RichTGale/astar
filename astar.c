@@ -5,7 +5,7 @@
  * A* (A Star) search algorithm.
  * 
  * Author: RIchard Gale
- * Version: 27th August, 2022
+ * Version: 28th August, 2022
  */
 
 #include "astar.h"
@@ -14,11 +14,9 @@
  * The data contained within the astar data-structure.
  */
 struct astar_data {
-	graph* g_ref;			// The graph.
-	min_heap openset;	// The openset
-	// The nodes that are the shortest path 
-	// between the starting node and the goal node.
-	array path;
+	graph* g_ref;		// The graph.
+	min_heap openset;	// The openset.
+	array path;			// The nodes that make up the shortest path.
 };
 
 /**
@@ -106,10 +104,10 @@ void astar_reconstruct_path(astar* as, node* start, node* current)
 void astar_search(astar* as_ref, node* start, node* end)
 {
 	node* current;	// The current node on the path
-	node* neighbour; // A neighbour of the current node on the path.
-	edge* e;		// The edge separating the current node and neighbour.
+	node* neighbour;	// A neighbour of the current node on the path.
+	edge* e;	// The edge separating the current node and neighbour.
 	bool path_found = false;	// Whether a path has been found
-	uint32_t tentative_g;	// Distance from start to the neighbour through the current node
+	uint32_t next_g;	// Cost from start to neighbour through the current node
 
 	// Initialising the array used to store the neighbours of the current node
 	// array_init(&neighbours);
@@ -134,43 +132,40 @@ void astar_search(astar* as_ref, node* start, node* end)
 			path_found = true;
 		} else
 		{
-
+			// Assessing each neighbour of the current node
 			for (int i = 0; i < array_size(node_get_edges(*current)); i++)
 			{
+				// Assigning to some variables to make the code easier
+				// to read.
 				e = array_get_data(node_get_edges(*current), i);
-				neighbour = graph_get_node(
-							*(*as_ref)->g_ref, 
-							edge_get_x(*e), 
-							edge_get_y(*e), 
-							edge_get_z(*e)
-							);
+				neighbour = graph_get_node(*(*as_ref)->g_ref, edge_get_x(*e), 
+											edge_get_y(*e), edge_get_z(*e));
 
-				tentative_g = node_get_g(*current) + edge_get_w(*e);
-				if (tentative_g < node_get_g(*neighbour))
+				// Measuring the cost of this path to the neighbour.
+				next_g = node_get_g(*current) + edge_get_w(*e);
+				if (next_g < node_get_g(*neighbour))
 				{
-					// This path to the neighbour is better than any previous one
-					// so we are recording it.
+					// This path to the neighbour is better than any previous 
+					// one so we are recording it.
 					node_set_came_from(neighbour, current);
-					node_set_g(neighbour, tentative_g);
+					node_set_g(neighbour, next_g);
 
 					// Setting the estimation for total cost of the path if it 
-					// goes through neighbour
-					node_set_f(neighbour, 
-								tentative_g + 
-								astar_h(*neighbour, 
-										*end, 
+					// goes through neighbour.
+					node_set_f(neighbour, next_g + astar_h(*neighbour, *end, 
 										graph_get_style(*(*as_ref)->g_ref)));
 
+					// We only need to add the neighbour to the openset
+					// if it's not yet in there.
 					if (!min_heap_val_exists((*as_ref)->openset, neighbour))
 					{
-						// Adding the neighbour to the heap
+						// Adding the neighbour to openset.
 						min_heap_add(&(*as_ref)->openset, neighbour);
 					}
 				}
 			}
 		}
 	}
-	// array_free(&neighbours);
 }
 
 

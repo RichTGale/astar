@@ -16,11 +16,14 @@
  * The data contained within the graph data-structure.
  */
 struct graph_data {
-    node*** nodes;  
-    uint16_t x_size;
-    uint16_t y_size;
-    uint16_t z_size;
-    enum graph_styles g_style;
+    node*** nodes;      // The nodes that make up the graph.
+    uint16_t x_size;    // The size of the x axis.
+    uint16_t y_size;    // The size of the y axis.
+    uint16_t z_size;    // The size of the z axis.
+
+    // The way in which a graph-node will be considered a 
+    // neighbour of another graph-node.
+    enum graph_styles g_style;  
 };
 
 /**
@@ -82,10 +85,16 @@ void graph_init_node_edges_manhattan(graph* g, node* n_ref)
     int8_t offset;  // Coordinate offset
     bool is_valid;  // Whether the coordinate is valid.
 
+    // Initialising the array we will store the neighbours in.
     array_init(&neighbours);
 
+    // Storing the neighbours
     for (offset = -1; offset <= 1; offset++)
     {
+        // The offset coordinates will get the node 1 place
+        // before and after the node provided to this function
+        // on each axis, as well as the node provided to the
+        // function.
         xcoord = (int32_t) node_get_x(*n_ref) + (int32_t) offset;
         ycoord = (int32_t) node_get_y(*n_ref) + (int32_t) offset;
         zcoord = (int32_t) node_get_z(*n_ref) + (int32_t) offset;
@@ -95,11 +104,15 @@ void graph_init_node_edges_manhattan(graph* g, node* n_ref)
                                     (int32_t) node_get_z(*n_ref));
         if (is_valid)
         {
+            // The coordinate is within the bounds of the graph so
+            // we can get the node it belongs to.
             neighbour = graph_get_node(*g, (uint16_t) xcoord, 
-                                        node_get_y(*n_ref), 
-                                        node_get_z(*n_ref));
+                                    node_get_y(*n_ref), node_get_z(*n_ref));
             if (n_ref != neighbour)
             {
+                // The coordinate is a neighbour as opposed to the
+                // node that was provided to this function so we add
+                // it to our array of neighbours.
                 array_push_back(&neighbours, neighbour);
             }
         }
@@ -109,11 +122,16 @@ void graph_init_node_edges_manhattan(graph* g, node* n_ref)
                                     ycoord, (int32_t) node_get_z(*n_ref));
         if (is_valid)
         {
+            // The coordinate is within the bounds of the graph so
+            // we can get the node it belongs to.
             neighbour = graph_get_node(*g, node_get_x(*n_ref), 
                                         (uint16_t) ycoord, 
                                         node_get_z(*n_ref));
              if (n_ref != neighbour)
             {
+                // The coordinate is a neighbour as opposed to the
+                // node that was provided to this function so we add
+                // it to our array of neighbours.
                 array_push_back(&neighbours, neighbour);
             }
         }
@@ -123,15 +141,25 @@ void graph_init_node_edges_manhattan(graph* g, node* n_ref)
                                     (int32_t) node_get_y(*n_ref), zcoord);
         if (is_valid)
         {
+            // The coordinate is within the bounds of the graph so
+            // we can get the node it belongs to.
             neighbour = graph_get_node(*g, node_get_x(*n_ref), 
                                         node_get_y(*n_ref), (uint16_t) zcoord);
             if (n_ref != neighbour)
             {
+                // The coordinate is a neighbour as opposed to the
+                // node that was provided to this function so we add
+                // it to our array of neighbours.
                 array_push_back(&neighbours, neighbour);
             }
         }
     }
+
+    // Initialising the edges of the neighbours for the node
+    // that was provided to this function.
     node_init_edges(n_ref, neighbours);
+
+    // Freeing the array of neighbours.
     array_free(&neighbours);
 }
 
@@ -149,10 +177,16 @@ void graph_init_node_edges_diagonal(graph* g, node* n_ref)
     int8_t yoffset; // Y axis coordinate offset.
     int8_t zoffset; // Z axis coordinate offset.
 
+    // Initialising the array we will store the neighbours in.
     array_init(&neighbours);
 
+    // Storing the neighbours.
     for (xoffset = -1; xoffset <= 1; xoffset++)
     {
+        // The offset coordinates will get the node 1 place
+        // before and after the node provided to this function
+        // on each axis, as well as the node provided to the
+        // function.
         xcoord = (int32_t) node_get_x(*n_ref) + (int32_t) xoffset;
         for (yoffset = -1; yoffset <= 1; yoffset++)
         {
@@ -162,42 +196,58 @@ void graph_init_node_edges_diagonal(graph* g, node* n_ref)
                 zcoord = (int32_t) node_get_z(*n_ref) + (int32_t) zoffset;
                 if (graph_valid_coord(*g, xcoord, ycoord, zcoord))
                 {
+                    // The coordinate is within the bounds of the graph so
+                    // we can get the node it belongs to.
                     neighbour = graph_get_node(*g, (uint16_t) xcoord, 
-                                    (uint16_t) ycoord, (uint16_t) zcoord
-                                );
+                                    (uint16_t) ycoord, (uint16_t) zcoord);
                     if (n_ref != neighbour)
                     {
+                        // The coordinate is a neighbour as opposed to the
+                        // node that was provided to this function so we add
+                        // it to our array of neighbours.
                         array_push_back(&neighbours, neighbour);
                     }
                 }
             }
         }
     }
+    // Initialising the edges of the neighbours for the node
+    // that was provided to this function.
     node_init_edges(n_ref, neighbours);
+
+    // Freeing the array of neighbours.
     array_free(&neighbours);
 }
 
+/**
+ * Initialises the graph's nodes. 
+ */
 void graph_init_nodes(graph* g_ref)
 {
     uint16_t x; // Current x coordinate
     uint16_t y; // Current y coordinate
     uint16_t z; // Current z coordinate
 
-    // Initialising graph nodes
+    // Allocating memory to the x axis.
     (*g_ref)->nodes = (node***) malloc((*g_ref)->x_size * sizeof(node**));
     for (x = 0; x < (*g_ref)->x_size; x++)
     {
+        // Allocating memory to the y axis.
         (*g_ref)->nodes[x] = (node**) malloc((*g_ref)->y_size * sizeof(node*));
         for (y = 0; y < (*g_ref)->y_size; y++)
         {
+            // Allocating memory to the z axis.
             (*g_ref)->nodes[x][y] = 
                 (node*) malloc((*g_ref)->z_size * sizeof(node));
             for (z = 0; z < (*g_ref)->z_size; z++)
             {
+                // Initialising the node at coordinate {x,y,z}
                 node_init(&(*g_ref)->nodes[x][y][z], x, y, z);
             }
         }
     }
+
+    // Creating the edges of the nodes' neighbours.
     for (x = 0; x < (*g_ref)->x_size; x++)
     {
         for (y = 0; y < (*g_ref)->y_size; y++)
@@ -206,11 +256,15 @@ void graph_init_nodes(graph* g_ref)
             {
                 if ((*g_ref)->g_style == MANHATTAN)
                 {
+                    // Initialising the manhattan style edges of the 
+                    // node at the coordinates {x,y,z}.
                     graph_init_node_edges_manhattan(g_ref, 
                                 &(*g_ref)->nodes[x][y][z]);
                 }
                 else if ((*g_ref)->g_style == DIAGONAL)
                 {
+                    // Initialising the diagonal style edges of the 
+                    // node at the coordinates {x,y,z}.
                     graph_init_node_edges_diagonal(g_ref, 
                                 &(*g_ref)->nodes[x][y][z]);
                 }

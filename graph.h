@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "array.h"
 #include "node.h"
@@ -33,11 +34,8 @@ typedef struct graph_data* graph;
 /**
  * Initialises the graph.
  */
-void graph_init(graph* g_ref, 
-                uint16_t x_size, 
-                uint16_t y_size, 
-                uint16_t z_size, 
-                enum graph_styles g_style);
+void graph_init(graph* g_ref, uint16_t x_size, uint16_t y_size, 
+                        uint16_t z_size, enum graph_styles g_style);
 
 /**
  * Frees the memory allocated to the graph.

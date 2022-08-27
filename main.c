@@ -8,12 +8,11 @@
  */
 
 #include <stdio.h>
-#include <stdint.h>
 
+#include "array.h"
 #include "node.h"
 #include "graph.h"
 #include "astar.h"
-#include "edge.h"
 
 int main(int argc, char* argv[])
 {

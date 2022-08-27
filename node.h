@@ -119,13 +119,6 @@ void node_add_edge(node* from_ref, node* to_ref, uint8_t weight);
  */
 void node_remove_edge(node* from_ref, node* to_ref);
 
-// /**
-//  * Removes a connection from node from another, stopping
-//  * them from considered neighbours.
-//  * Note, this is a one-way disconnection.
-//  */
-// void node_remove_neighbour(node* n_ref, node* neighbour);
-
 /**
  * Prints the node.
  */
