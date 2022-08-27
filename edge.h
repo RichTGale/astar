@@ -49,7 +49,4 @@ uint16_t edge_get_z(edge e);
  */
 uint16_t edge_get_w(edge e);
 
-
-
-
 #endif // EDGE_H

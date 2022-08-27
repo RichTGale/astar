@@ -5,7 +5,7 @@
  * three-dimensional weighted graph.
  * 
  * Author: Richard Gale
- * Version: 27th August, 2022
+ * Version: 28th August, 2022
  */
 
 #ifndef GRAPH_H
@@ -30,7 +30,6 @@ enum graph_styles { MANHATTAN, DIAGONAL };
  */
 typedef struct graph_data* graph;
 
-
 /**
  * Initialises the graph.
  */
@@ -52,6 +51,11 @@ void graph_free(graph* g);
 node* graph_get_node(graph g, uint16_t x, uint16_t y, uint16_t z);
 
 /**
+ * Returns the graph's graph_style.
+ */
+enum graph_styles graph_get_style(graph g);
+
+/**
  * Adds a connection from one graph node to another, considering 
  * it as a neighbour.
  * Note, this creates a one-way connection.
@@ -64,11 +68,6 @@ void graph_add_edge(node* from_ref, node* to_ref, uint8_t weight);
  * Note, this is a one-way disconnection.
  */
 void graph_remove_edge(node* from_ref, node* to_ref);
-
-/**
- * Returns the graph's graph_style.
- */
-enum graph_styles graph_get_style(graph g);
 
 /**
  * Prints the graph.
