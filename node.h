@@ -4,7 +4,7 @@
  * Data structure and procedure declarations for a weighted graph node.
  * 
  * Author: Richard Gale
- * Version: 26th August, 2022 
+ * Version: 27th August, 2022 
  */
 
 #ifndef NODE_H
@@ -17,29 +17,33 @@
 #include <math.h>
 
 #include "array.h"
-
-
+#include "edge.h"
 
 /**
  * The node data-structure.
  */
 typedef struct node_data* node;
 
-/**
- * The edge data structure.
- * Reprresents the edge of a node.
- */
-typedef struct {
-    node* n_ref;    // A reference to the neighbour that the edge belongs to.
-    uint8_t weight; // The weight of the edge.
-} edge;
+// /**
+//  * The edge data structure.
+//  * Reprresents the edge of a node.
+//  */
+// typedef struct {
+//     node* n_ref;    // A reference to the neighbour that the edge belongs to.
+//     uint8_t weight; // The weight of the edge.
+// } edge;
 
-void edge_init(edge** e_ref, node* n_ref, uint8_t weight);
+// void edge_init(edge** e_ref, node* n_ref, uint8_t weight);
 
 /**
  * Initialises the node at the provided reference.
  */
 void node_init(node* n_ref, uint16_t x, uint16_t y, uint16_t z);
+
+/**
+ * Initialises the node's edges.
+ */
+void node_init_edges(node* n_ref, array edges);
 
 /**
  * Frees the memory allocated to the node at the provided reference.
@@ -78,8 +82,10 @@ uint32_t node_get_f(node n);
  */
 uint32_t node_get_g(node n);
 
-
-array* node_get_edges(node* n_ref);
+/**
+ * Returns the edges of the supplied node,
+ */
+array node_get_edges(node n);
 
 /**
  * Sets the node at the provided reference as being the node 
@@ -104,14 +110,14 @@ void node_set_g(node* n, uint32_t g);
  * it as a neighbour.
  * Note, this creates a one-way connection.
  */
-void node_add_edge(node* n_ref, node* neighbour, uint8_t weight);
+void node_add_edge(node* from_ref, node* to_ref, uint8_t weight);
 
 /**
  * Removes a connection from node from another, stopping
  * them from considered neighbours.
  * Note, this is a one-way disconnection.
  */
-void node_remove_edge(node* n_ref, node* neighbour);
+void node_remove_edge(node* from_ref, node* to_ref);
 
 // /**
 //  * Removes a connection from node from another, stopping

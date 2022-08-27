@@ -5,7 +5,7 @@
  * a three-dimensional weighted graph. 
  *
  * Author: Richard Gale
- * Version: 26th August, 2022
+ * Version: 27th August, 2022
  */
 
 #include "graph.h"
@@ -70,77 +70,115 @@ node* graph_get_node(graph g, uint16_t x, uint16_t y, uint16_t z)
 }
 
 /**
- * Adds the provided node's neighbouring nodes to the provided array.
+ * Creates mahattan style edges for the provided node.
  */
-void graph_neighbours(graph* g, node* node, array* neighbours)
+void graph_edges_manhattan(graph* g, node* n_ref)
 {
+    array neighbours;   // The neighbouring nodes of the provided node.
     int32_t xcoord; // The neighbour's x coordinate.
     int32_t ycoord; // The neighbour's y coordinate.
     int32_t zcoord; // The neighbour's z coordinate.
     int8_t i;       // Coordinate offset
+    edge* e_ref;    // The edge seperating the node and neighbour
+
+    array_init(&neighbours);
+
+    for (i = -1; i <= 1; i++)
+    {
+        xcoord = (int32_t) node_get_x(*n_ref) + (int32_t) i;
+        ycoord = (int32_t) node_get_y(*n_ref) + (int32_t) i;
+        zcoord = (int32_t) node_get_z(*n_ref) + (int32_t) i;
+        
+        // X axis neighbours.
+        if (graph_valid_coord(*g, xcoord, (int32_t) node_get_y(*n_ref), (int32_t) node_get_z(*n_ref)) &&
+            n_ref != graph_get_node(*g, (uint16_t) xcoord, node_get_y(*n_ref), node_get_z(*n_ref)))
+        {
+            array_push_back(
+                &neighbours, 
+                graph_get_node(
+                    *g, 
+                    (uint16_t) xcoord, 
+                    node_get_y(*n_ref), 
+                    node_get_z(*n_ref)
+                )
+            );
+        }
+        // Y axis neighbours.
+        if (graph_valid_coord(*g, (int32_t) node_get_x(*n_ref), ycoord, (int32_t) node_get_z(*n_ref)) &&
+            n_ref != graph_get_node(*g, node_get_x(*n_ref), (uint16_t) ycoord, node_get_z(*n_ref)))
+        {
+            array_push_back(
+                &neighbours, 
+                graph_get_node(
+                    *g, 
+                    node_get_x(*n_ref), 
+                    (uint16_t) ycoord, 
+                    node_get_z(*n_ref)
+                )
+            );
+        }
+        // Z axis neighbours.
+        if (graph_valid_coord(*g, (int32_t) node_get_x(*n_ref), (int32_t) node_get_y(*n_ref), zcoord) &&
+            n_ref != graph_get_node(*g, node_get_x(*n_ref), node_get_y(*n_ref), (uint16_t) zcoord))
+        {
+            array_push_back(
+                &neighbours, 
+                graph_get_node(
+                    *g, 
+                    node_get_x(*n_ref), 
+                    node_get_y(*n_ref), 
+                    (uint16_t) zcoord
+                )
+            );
+        }
+    }
+    node_init_edges(n_ref, neighbours);
+    array_free(&neighbours);
+}
+
+/**
+ * Creates diagonal style edges for the provided node.
+ */
+void graph_edges_diagonal(graph* g, node* n_ref)
+{
+    array neighbours;   // The neighbouring nodes of the provided node.
+    int32_t xcoord; // The neighbour's x coordinate.
+    int32_t ycoord; // The neighbour's y coordinate.
+    int32_t zcoord; // The neighbour's z coordinate.
     int8_t x;       // X axis coordinate offset.
     int8_t y;       // Y axis coordinate offset.
     int8_t z;       // Z axis coordinate offset.
     edge* e_ref;    // The edge seperating the node and neighbour
 
-    // Storing manhattan style neighbours.
-    if ((*g)->g_style == MANHATTAN)
+    array_init(&neighbours);
+
+    for (x = -1; x <= 1; x++)
     {
-        for (i = -1; i <= 1; i++)
+        xcoord = (int32_t) node_get_x(*n_ref) + (int32_t) x;
+        for (y = -1; y <= 1; y++)
         {
-            xcoord = (int32_t) node_get_x(*node) + (int32_t) i;
-            ycoord = (int32_t) node_get_y(*node) + (int32_t) i;
-            zcoord = (int32_t) node_get_z(*node) + (int32_t) i;
-            
-            // X axis neighbours.
-            if (graph_valid_coord(*g, xcoord, (int32_t) node_get_y(*node), (int32_t) node_get_z(*node)) &&
-                node != graph_get_node(*g, (uint16_t) xcoord, node_get_y(*node), node_get_z(*node)))
+            ycoord = (int32_t) node_get_y(*n_ref) + (int32_t) y;
+            for (z = -1; z <= 1; z++)
             {
-                // Adding a valid x axis neighbour.
-                edge_init(&e_ref, graph_get_node(*g, (uint16_t) xcoord, node_get_y(*node), node_get_z(*node)), 1);
-                array_push_back(neighbours, e_ref);
-            }
-            // Y axis neighbours.
-            if (graph_valid_coord(*g, (int32_t) node_get_x(*node), ycoord, (int32_t) node_get_z(*node)) &&
-                node != graph_get_node(*g, node_get_x(*node), (uint16_t) ycoord, node_get_z(*node)))
-            {
-                // Adding a valid y axis neighbour.
-                edge_init(&e_ref, graph_get_node(*g, node_get_x(*node), (uint16_t) ycoord, node_get_z(*node)), 1);
-                array_push_back(neighbours, e_ref);
-            }
-            // Z axis neighbours.
-            if (graph_valid_coord(*g, (int32_t) node_get_x(*node), (int32_t) node_get_y(*node), zcoord) &&
-                node != graph_get_node(*g, node_get_x(*node), node_get_y(*node), (uint16_t) zcoord))
-            {
-                // Adding a valid z axis neighbour.
-                edge_init(&e_ref, graph_get_node(*g, node_get_x(*node), node_get_y(*node), (uint16_t) zcoord), 1);
-                array_push_back(neighbours, e_ref);
-            }
-        }
-    } 
-    // Storing diagonal style neighbours
-    else if ((*g)->g_style == DIAGONAL)
-    {
-        for (x = -1; x <= 1; x++)
-        {
-            xcoord = (int32_t) node_get_x(*node) + (int32_t) x;
-            for (y = -1; y <= 1; y++)
-            {
-                ycoord = (int32_t) node_get_y(*node) + (int32_t) y;
-                for (z = -1; z <= 1; z++)
+                zcoord = (int32_t) node_get_z(*n_ref) + (int32_t) z;
+                if (graph_valid_coord(*g, xcoord, ycoord, zcoord) &&
+                    n_ref != graph_get_node(*g, (uint16_t) xcoord, (uint16_t) ycoord, (uint16_t) zcoord))
                 {
-                    zcoord = (int32_t) node_get_z(*node) + (int32_t) z;
-                    if (graph_valid_coord(*g, xcoord, ycoord, zcoord) &&
-                        node != graph_get_node(*g, (uint16_t) xcoord, (uint16_t) ycoord, (uint16_t) zcoord))
-                    {
-                        // Adding a valid neighbour.
-                        edge_init(&e_ref, graph_get_node(*g, (uint16_t) xcoord, (uint16_t) ycoord, (uint16_t) zcoord), 1);
-                        array_push_back(neighbours, e_ref);
-                    }
+                    array_push_back(
+                        &neighbours, 
+                        graph_get_node(
+                            *g, 
+                            (uint16_t) xcoord, 
+                            (uint16_t) ycoord, 
+                            (uint16_t) zcoord
+                        )
+                    );
                 }
             }
         }
-    } 
+    }
+    node_init_edges(n_ref, neighbours);
+    array_free(&neighbours);
 }
 
 /**
@@ -156,10 +194,18 @@ void graph_init(graph* g_ref,
     uint16_t y; // Current y coordinate
     uint16_t z; // Current z coordinate
     
-
     // Allocating memory for the graph
     *g_ref = (graph) malloc(sizeof(struct graph_data));
-    
+
+    // Storing the graph dimensions
+    (*g_ref)->x_size = x_size;
+    (*g_ref)->y_size = y_size;
+    (*g_ref)->z_size = z_size;
+
+    // Setting the way in which graph-nodes will be considered
+    // neighbours of other graph-nodes
+    (*g_ref)->g_style = g_style;
+
     // Initialising graph nodes
     (*g_ref)->nodes = (node***) malloc(x_size * sizeof(node**));
     for (x = 0; x < x_size; x++)
@@ -177,26 +223,20 @@ void graph_init(graph* g_ref,
             }
         }
     }
-
-    // Storing the graph dimensions
-    (*g_ref)->x_size = x_size;
-    (*g_ref)->y_size = y_size;
-    (*g_ref)->z_size = z_size;
-
-    // Setting the way in which graph-nodes will be considered
-    // neighbours of other graph-nodes
-    (*g_ref)->g_style = g_style;
-
-    // Initialising graph nodes
     for (x = 0; x < x_size; x++)
     {
         for (y = 0; y < y_size; y++)
         {
             for (z = 0; z < z_size; z++)
             {
-                graph_neighbours(g_ref, 
-                                    &(*g_ref)->nodes[x][y][z], 
-                                    node_get_edges(&(*g_ref)->nodes[x][y][z]));
+                if ((*g_ref)->g_style == MANHATTAN)
+                {
+                    graph_edges_manhattan(g_ref, &(*g_ref)->nodes[x][y][z]);
+                }
+                else if ((*g_ref)->g_style == DIAGONAL)
+                {
+                    graph_edges_diagonal(g_ref, &(*g_ref)->nodes[x][y][z]);
+                }
             }
         }
     }
@@ -235,9 +275,9 @@ void graph_free(graph* g_ref)
  * it as a neighbour.
  * Note, this creates a one-way connection.
  */
-void  graph_connect_node(node* node_a, node* node_b, uint8_t weight)
+void  graph_add_edge(node* from_ref, node* to_ref, uint8_t weight)
 {
-    node_add_edge(node_a, node_b, weight);
+    node_add_edge(from_ref, to_ref, weight);
 }
 
 /**
@@ -245,9 +285,9 @@ void  graph_connect_node(node* node_a, node* node_b, uint8_t weight)
  * them from considered neighbours.
  * Note, this is a one-way disconnection.
  */
-void graph_disconnect_node(node* node_a, node* node_b) 
+void graph_remove_edge(node* from_ref, node* to_ref) 
 {
-    node_remove_edge(node_a, node_b);
+    node_remove_edge(from_ref, to_ref);
 }
 
 

@@ -5,7 +5,7 @@
  * three-dimensional weighted graph.
  * 
  * Author: Richard Gale
- * Version: 26th August, 2022
+ * Version: 27th August, 2022
  */
 
 #ifndef GRAPH_H
@@ -56,14 +56,14 @@ node* graph_get_node(graph g, uint16_t x, uint16_t y, uint16_t z);
  * it as a neighbour.
  * Note, this creates a one-way connection.
  */
-void graph_connect_node(node* node_a, node* node_b, uint8_t weight);
+void graph_add_edge(node* from_ref, node* to_ref, uint8_t weight);
 
 /**
  * Disconnects one graph node from another, stopping
  * them from considered neighbours.
  * Note, this is a one-way disconnection.
  */
-void graph_disconnect_node(node* node_a, node* node_b);
+void graph_remove_edge(node* from_ref, node* to_ref);
 
 /**
  * Returns the graph's graph_style.

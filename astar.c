@@ -5,7 +5,7 @@
  * A* (A Star) search algorithm.
  * 
  * Author: RIchard Gale
- * Version: 26th August, 2022
+ * Version: 27th August, 2022
  */
 
 #include "astar.h"
@@ -106,7 +106,8 @@ void astar_reconstruct_path(astar* as, node* start, node* current)
 void astar_search(astar* as_ref, node* start, node* end)
 {
 	node* current;	// The current node on the path
-	edge* e_ref;	// The edge sepearating the current node and neighbour.
+	node* neighbour; // A neighbour of the current node on the path.
+	edge* e;		// The edge separating the current node and neighbour.
 	bool path_found = false;	// Whether a path has been found
 	uint32_t tentative_g;	// Distance from start to the neighbour through the current node
 
@@ -133,32 +134,37 @@ void astar_search(astar* as_ref, node* start, node* end)
 			path_found = true;
 		} else
 		{
-			// Create our array of neighbours of the current node
-			// graph_neighbours((*as_ref)->g_ref, current, &neighbours);
 
-			for (int i = 0; i < array_size(*(node_get_edges(current))); i++)
+			for (int i = 0; i < array_size(node_get_edges(*current)); i++)
 			{
-				e_ref = array_get_data(*(node_get_edges(current)), i);
-				tentative_g = node_get_g(*current) + (*e_ref).weight;
-				if (tentative_g < node_get_g(*(*e_ref).n_ref))
+				e = array_get_data(node_get_edges(*current), i);
+				neighbour = graph_get_node(
+							*(*as_ref)->g_ref, 
+							edge_get_x(*e), 
+							edge_get_y(*e), 
+							edge_get_z(*e)
+							);
+
+				tentative_g = node_get_g(*current) + edge_get_w(*e);
+				if (tentative_g < node_get_g(*neighbour))
 				{
 					// This path to the neighbour is better than any previous one
 					// so we are recording it.
-					node_set_came_from((*e_ref).n_ref, current);
-					node_set_g((*e_ref).n_ref, tentative_g);
+					node_set_came_from(neighbour, current);
+					node_set_g(neighbour, tentative_g);
 
 					// Setting the estimation for total cost of the path if it 
 					// goes through neighbour
-					node_set_f((*e_ref).n_ref, 
+					node_set_f(neighbour, 
 								tentative_g + 
-								astar_h(*(*e_ref).n_ref, 
+								astar_h(*neighbour, 
 										*end, 
 										graph_get_style(*(*as_ref)->g_ref)));
 
-					if (!min_heap_val_exists((*as_ref)->openset, (*e_ref).n_ref))
+					if (!min_heap_val_exists((*as_ref)->openset, neighbour))
 					{
 						// Adding the neighbour to the heap
-						min_heap_add(&(*as_ref)->openset, (*e_ref).n_ref);
+						min_heap_add(&(*as_ref)->openset, neighbour);
 					}
 				}
 			}

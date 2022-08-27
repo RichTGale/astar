@@ -4,7 +4,7 @@
  * Demonstrates the use of the astar type.
  * 
  * Author: Richard Gale
- * Version: 26th August, 2022
+ * Version: 27th August, 2022
  */
 
 #include <stdio.h>
@@ -13,6 +13,7 @@
 #include "node.h"
 #include "graph.h"
 #include "astar.h"
+#include "edge.h"
 
 int main(int argc, char* argv[])
 {
@@ -23,14 +24,11 @@ int main(int argc, char* argv[])
     graph_init(&g, 3, 3, 3, MANHATTAN);
     graph_print(g);
 
-    // Connecting the start node to the graph's central node.
-    graph_connect_node(
-        graph_get_node(g, 0, 0, 0),  graph_get_node(g, 1, 1, 1), 1);
+    // Connecting the starting node to the graph's central node.
+    graph_add_edge(graph_get_node(g, 0, 0, 0), graph_get_node(g, 1, 1, 1), 1);
 
-    // Disconnecting the graph's central node from the
-    // next node the algorithm usually chooses to take.
-    graph_disconnect_node(
-        graph_get_node(g, 1, 1, 1),  graph_get_node(g, 2, 1, 1));
+    // Removing an edge
+    graph_remove_edge(graph_get_node(g, 1, 1, 1), graph_get_node(g, 2, 1, 1));
 
     // Initialising the astar.
     astar_init(&as, &g);
