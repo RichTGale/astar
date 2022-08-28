@@ -30,13 +30,13 @@ struct graph_data {
  * Returns true if the provided coordinates are within 
  * the bounds of the dimentions of the graph.
  */
-bool graph_valid_coord(graph g, int32_t x , int32_t y , int32_t z)
+bool graph_valid_coord(graph g, int16_t x , int16_t y , int16_t z)
 {
     bool is_valid_coord = false;
 
-    if (x >= 0 && x < (int32_t) g->x_size &&
-        y >= 0 && y < (int32_t) g->y_size &&
-        z >= 0 && z < (int32_t) g->z_size)
+    if (x >= 0 && x < (int16_t) g->x_size &&
+        y >= 0 && y < (int16_t) g->y_size &&
+        z >= 0 && z < (int16_t) g->z_size)
     {
         // The provided coordinates are withn the bounds 
         // of the dimensions graph.
@@ -49,11 +49,11 @@ bool graph_valid_coord(graph g, int32_t x , int32_t y , int32_t z)
  * Returns a reference to the node in the graph at 
  * the provided x, y, z coordinates.
  */
-node* graph_get_node(graph g, uint16_t x, uint16_t y, uint16_t z)
+node* graph_get_node(graph g, uint8_t x, uint8_t y, uint8_t z)
 {
     node* n;    // The node at the provided coordinates.
 
-    if (graph_valid_coord(g, (int32_t) x, (int32_t) y, (int32_t) z))
+    if (graph_valid_coord(g, (int16_t) x, (int16_t) y, (int16_t) z))
     {
         // The provided coordinates are valid so we can
         // proceed to getting the node.
@@ -76,8 +76,7 @@ node* graph_get_node(graph g, uint16_t x, uint16_t y, uint16_t z)
  * Returns true if the relationship between the provided offsets is
  * consistent with that of manhattan neighbours.
  */
-bool manhattan_relationship(int8_t xoffset, int8_t yoffset, 
-                                                            int8_t zoffset)
+bool manhattan_relationship(int8_t xoffset, int8_t yoffset, int8_t zoffset)
 {
     bool is_manhattan; // Whether the relationship is manhattan.
 
@@ -117,9 +116,9 @@ bool graph_init_node_edges(graph* g_ref, node* n_ref)
     int8_t xoffset;     // X axis coordinate offset.
     int8_t yoffset;     // Y axis coordinate offset.
     int8_t zoffset;     // Z axis coordinate offset.
-    int32_t xcoord;     // The neighbour's x coordinate.
-    int32_t ycoord;     // The neighbour's y coordinate.
-    int32_t zcoord;     // The neighbour's z coordinate.
+    int16_t xcoord;     // The neighbour's x coordinate.
+    int16_t ycoord;     // The neighbour's y coordinate.
+    int16_t zcoord;     // The neighbour's z coordinate.
 
     // Preparing the array of neighbours for use.
     array_init(&neighbours);
@@ -136,14 +135,14 @@ bool graph_init_node_edges(graph* g_ref, node* n_ref)
                 {
                     // Determining whether these coordinates are valid
                     // graph coordinates
-                    xcoord = (int32_t) node_get_x(*n_ref) + (int32_t) xoffset;
-                    ycoord = (int32_t) node_get_y(*n_ref) + (int32_t) yoffset;
-                    zcoord = (int32_t) node_get_z(*n_ref) + (int32_t) zoffset;
+                    xcoord = (int16_t) node_get_x(*n_ref) + (int16_t) xoffset;
+                    ycoord = (int16_t) node_get_y(*n_ref) + (int16_t) yoffset;
+                    zcoord = (int16_t) node_get_z(*n_ref) + (int16_t) zoffset;
                     if (graph_valid_coord(*g_ref, xcoord, ycoord, zcoord))
                     {
                         // Adding this neighbour to the array of neighbours.
-                        neighbour = graph_get_node(*g_ref, (uint16_t) xcoord, 
-                                        (uint16_t) ycoord, (uint16_t) zcoord);
+                        neighbour = graph_get_node(*g_ref, (uint8_t) xcoord, 
+                                        (uint8_t) ycoord, (uint8_t) zcoord);
                         array_push_back(&neighbours, neighbour); 
                     }
                 }
@@ -152,14 +151,14 @@ bool graph_init_node_edges(graph* g_ref, node* n_ref)
                 {
                     // Determining whether these coordinates are valid
                     // graph coordinates
-                    xcoord = (int32_t) node_get_x(*n_ref) + (int32_t) xoffset;
-                    ycoord = (int32_t) node_get_y(*n_ref) + (int32_t) yoffset;
-                    zcoord = (int32_t) node_get_z(*n_ref) + (int32_t) zoffset;
+                    xcoord = (int16_t) node_get_x(*n_ref) + (int16_t) xoffset;
+                    ycoord = (int16_t) node_get_y(*n_ref) + (int16_t) yoffset;
+                    zcoord = (int16_t) node_get_z(*n_ref) + (int16_t) zoffset;
                     if (graph_valid_coord(*g_ref, xcoord, ycoord, zcoord))
                     {
                         // Adding this neighbour to the array of neighbours.
-                        neighbour = graph_get_node(*g_ref, (uint16_t) xcoord, 
-                                        (uint16_t) ycoord, (uint16_t) zcoord);
+                        neighbour = graph_get_node(*g_ref, (uint8_t) xcoord, 
+                                        (uint8_t) ycoord, (uint8_t) zcoord);
                         array_push_back(&neighbours, neighbour); 
                     }
                 }
@@ -180,9 +179,9 @@ bool graph_init_node_edges(graph* g_ref, node* n_ref)
  */
 void graph_init_nodes(graph* g_ref)
 {
-    uint16_t x; // Current x coordinate
-    uint16_t y; // Current y coordinate
-    uint16_t z; // Current z coordinate
+    uint8_t x; // Current x coordinate
+    uint8_t y; // Current y coordinate
+    uint8_t z; // Current z coordinate
 
     // Allocating memory to the x axis.
     (*g_ref)->nodes = (node***) malloc((*g_ref)->x_size * sizeof(node**));
@@ -221,11 +220,8 @@ void graph_init_nodes(graph* g_ref)
 /**
  * Initialises the graph.
  */
-void graph_init(graph* g_ref, 
-                uint16_t x_size, 
-                uint16_t y_size, 
-                uint16_t z_size, 
-                enum graph_styles g_style)
+void graph_init(graph* g_ref, uint8_t x_size, uint8_t y_size, 
+                            uint8_t z_size, enum graph_styles g_style)
 {
     // Allocating memory for the graph
     *g_ref = (graph) malloc(sizeof(struct graph_data));
@@ -247,9 +243,9 @@ void graph_init(graph* g_ref,
  */
 void graph_free(graph* g_ref)
 {
-    uint16_t x; // Current x coordinate
-    uint16_t y; // Current y coordinate
-    uint16_t z; // Current z coordinate
+    uint8_t x; // Current x coordinate
+    uint8_t y; // Current y coordinate
+    uint8_t z; // Current z coordinate
 
     // Freeing the nodes
     for (x = 0; x < (*g_ref)->x_size; x++)
@@ -303,9 +299,9 @@ void graph_remove_edge(node* from_ref, node* to_ref)
  */
 void graph_print(graph g)
 {
-    uint16_t x; // Current x coordinate
-    uint16_t y; // Current y coordinate
-    uint16_t z; // Current z coordinate
+    uint8_t x; // Current x coordinate
+    uint8_t y; // Current y coordinate
+    uint8_t z; // Current z coordinate
 
     printf("Graph:\n{\n");
     for (x = 0; x < g->x_size; x++)

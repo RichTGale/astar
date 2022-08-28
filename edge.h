@@ -5,7 +5,7 @@
  * Simulates the an edge of a graph-node.
  * 
  * Author: Richard Gale
- * Version: 27th August, 2022
+ * Version: 28th August, 2022
  */
 
 #ifndef EDGE_H
@@ -22,7 +22,7 @@ typedef struct edge_data* edge;
 /**
  * Initialises the edge. 
  */
-void edge_init(edge* e_ref, uint16_t x, uint16_t y, uint16_t z, uint8_t w);
+void edge_init(edge* e_ref, uint8_t x, uint8_t y, uint8_t z, uint8_t w);
 
 /**
  * Frees the memory allocated to the edge. 

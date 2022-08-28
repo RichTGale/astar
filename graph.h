@@ -34,8 +34,8 @@ typedef struct graph_data* graph;
 /**
  * Initialises the graph.
  */
-void graph_init(graph* g_ref, uint16_t x_size, uint16_t y_size, 
-                        uint16_t z_size, enum graph_styles g_style);
+void graph_init(graph* g_ref, uint8_t x_size, uint8_t y_size, 
+                        uint8_t z_size, enum graph_styles g_style);
 
 /**
  * Frees the memory allocated to the graph.
@@ -46,7 +46,7 @@ void graph_free(graph* g);
  * Returns a reference to the node in the graph at 
  * the provided x, y, z coordinates.
  */
-node* graph_get_node(graph g, uint16_t x, uint16_t y, uint16_t z);
+node* graph_get_node(graph g, uint8_t x, uint8_t y, uint8_t z);
 
 /**
  * Returns the graph's graph_style.

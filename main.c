@@ -4,10 +4,11 @@
  * Demonstrates the use of the astar type.
  * 
  * Author: Richard Gale
- * Version: 27th August, 2022
+ * Version: 28th August, 2022
  */
 
 #include <stdio.h>
+#include <inttypes.h>
 
 #include "array.h"
 #include "node.h"
@@ -17,7 +18,7 @@
 int main(int argc, char* argv[])
 {
     astar as;   // The astar.
-    graph g;    // The graph.   
+    graph g;    // The graph.
     
     // Initialising and printing the graph.
     graph_init(&g, 3, 3, 3, MANHATTAN);

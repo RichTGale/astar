@@ -4,7 +4,7 @@
  * Data-structure and procedure declarations for a minimum heap.
  * 
  * Author: Richard Gale
- * Version: 25th August, 2022
+ * Version: 28th August, 2022
  */
 
 #ifndef MIN_HEAP_H

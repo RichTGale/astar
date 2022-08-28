@@ -5,7 +5,7 @@
  * Simulates the an edge of a graph-node.
  * 
  * Author: Richard Gale
- * Version: 27th August, 2022
+ * Version: 28th August, 2022
  */
 
 #include "edge.h"
@@ -14,16 +14,16 @@
  * The data contained in an the edge.
  */
 struct edge_data {
-    uint16_t x; // The x coordinates of the neighbour this edge is against.
-    uint16_t y; // The y coordinates of the neighbour this edge is against.
-    uint16_t z; // The z coordinates of the neighbour this edge is against.
+    uint8_t x; // The x coordinates of the neighbour this edge is against.
+    uint8_t y; // The y coordinates of the neighbour this edge is against.
+    uint8_t z; // The z coordinates of the neighbour this edge is against.
     uint8_t  w; // The weight of the edge.
 };
 
 /**
  * Initialises the edge. 
  */
-void edge_init(edge* e_ref, uint16_t x, uint16_t y, uint16_t z, uint8_t w)
+void edge_init(edge* e_ref, uint8_t x, uint8_t y, uint8_t z, uint8_t w)
 {
     *e_ref = (edge) malloc(sizeof(struct edge_data));
     (*e_ref)->x = x;

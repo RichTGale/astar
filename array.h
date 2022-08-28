@@ -6,7 +6,7 @@
  * are added to it and removed from it.
  *
  * Author: Richard Gale
- * Version: 26th August, 2022
+ * Version: 28th August, 2022
  */
 
 #ifndef ARRAY_H
@@ -37,12 +37,12 @@ void array_free(array* a_ref);
  * Returns the data in the provided array at the element
  * at the provided index.
  */ 
-void* array_get_data(array head, uint32_t index);
+void* array_get_data(array head, uint64_t index);
 
 /**
  * Returns the number of elements in the provided array.
  */
-uint32_t array_size(array head);
+uint64_t array_size(array head);
 
 /**
  * Removes the first element in the array at the provided
@@ -59,7 +59,7 @@ void* array_pop_back(array* head_ref);
 /**
  * Removes the element at the provided index and returns it.
  */
-void* array_pop_data(array* head_ref, uint32_t index);
+void* array_pop_data(array* head_ref, uint64_t index);
 
 /**
  * Adds a new element to the beginning of the array at
@@ -77,6 +77,6 @@ void array_push_back(array* head_ref, void* data);
  * Sets the data in the element at the provided index of the
  * array at the provided array reference.
  */
-void array_set_data(array* head_ref, uint32_t index, void* data);
+void array_set_data(array* head_ref, uint64_t index, void* data);
 
 #endif // ARRAY_H

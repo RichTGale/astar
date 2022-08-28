@@ -6,7 +6,7 @@
  * are added to it and removed from it.
  *
  * Author: Richard Gale
- * Version: 26th August, 2022
+ * Version: 28th August, 2022
  */
 
 #include "array.h"
@@ -57,9 +57,9 @@ void array_free(array* a_ref)
  * Returns the data in the provided array at the element
  * at the provided index.
  */ 
-void* array_get_data(array head, uint32_t index)
+void* array_get_data(array head, uint64_t index)
 {
-	uint32_t elem; // The current element of the array. 
+	uint64_t elem; // The current element of the array. 
 
 	for (elem = 0; elem < index; elem++)
 	{
@@ -82,9 +82,9 @@ void* array_get_data(array head, uint32_t index)
 /**
  * Returns the number of elements in the provided array.
  */
-uint32_t array_size(array head)
+uint64_t array_size(array head)
 {
-    uint32_t size = 0; // The number of elements in the array
+    uint64_t size = 0; // The number of elements in the array
 
 	if (head->data != NULL)
 	{
@@ -137,7 +137,7 @@ void* array_pop_front(array* head_ref)
 void* array_pop_back(array* head_ref)
 {
 	void* back;		// The data contained in the back element
-	uint32_t size;		// The number of elements in the array
+	uint64_t size;		// The number of elements in the array
 
 	size = array_size(*head_ref);
 
@@ -194,15 +194,16 @@ void array_push_front(array* head_ref, void* data)
 /**
  * Removes the element at the provided index and returns it.
  */
-void* array_pop_data(array* head_ref, uint32_t index)
+void* array_pop_data(array* head_ref, uint64_t index)
 {
 	array next;	// A copy of the array starting from the second element.
 	void* data;	// The data to return.
-	uint32_t size = array_size(*head_ref); // The size of the array.
+	uint64_t size = array_size(*head_ref); // The size of the array.
+	uint64_t elem; // The current element.
 
 	if (index < size)
 	{
-		for (int elem = 0; elem < size; elem++)
+		for (elem = 0; elem < size; elem++)
 		{
 			if (elem == index)
 			{
@@ -255,9 +256,11 @@ void array_push_back(array* head_ref, void* data)
  * Sets the data in the element at the provided index of the
  * array at the provided array reference.
  */
-void array_set_data(array* head_ref, uint32_t index, void* data)
+void array_set_data(array* head_ref, uint64_t index, void* data)
 {
-	for (uint32_t i = 0; i < index; i++)
+	uint64_t elem; // The current element
+
+	for (elem = 0; elem < index; elem++)
 	{
 		if ((*head_ref)->next != NULL)
 		{
@@ -267,7 +270,7 @@ void array_set_data(array* head_ref, uint32_t index, void* data)
 			printf(
 				"\nERROR: In function array_set_data(): "
 				"index %d out of bounds!", 
-				i
+				elem
 			);
 			exit(INDEX_OUT_OF_BOUNDS_ERROR);
 		}

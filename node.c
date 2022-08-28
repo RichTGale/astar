@@ -15,17 +15,17 @@
 struct node_data {
     array edges;    // The edges of the node's neighbour's.
     node* came_from; // A reference to the node preceeding this node on the path.
-    uint16_t x;  // x coordinate.
-    uint16_t y;  // y coordinate.
-    uint16_t z;  // z coordinate.
-    uint32_t f;  // Estimated total cost of path after going through this node.
-    uint32_t g;  // Cost of the path from start node to this node.
+    uint8_t x;  // x coordinate.
+    uint8_t y;  // y coordinate.
+    uint8_t z;  // z coordinate.
+    uint64_t f;  // Estimated total cost of path after going through this node.
+    uint64_t g;  // Cost of the path from start node to this node.
 };
 
 /**
  * Initialises the node at the provided reference.
  */
-void node_init(node* n_ref, uint16_t x, uint16_t y, uint16_t z)
+void node_init(node* n_ref, uint8_t x, uint8_t y, uint8_t z)
 {
     *n_ref = (node) malloc(sizeof(struct node_data));
     array_init(&(*n_ref)->edges);
@@ -33,8 +33,8 @@ void node_init(node* n_ref, uint16_t x, uint16_t y, uint16_t z)
     (*n_ref)->x = x;
     (*n_ref)->y = y;
     (*n_ref)->z = z;
-    (*n_ref)->f = UINT32_MAX;
-    (*n_ref)->g = UINT32_MAX;
+    (*n_ref)->f = UINT64_MAX;
+    (*n_ref)->g = UINT64_MAX;
 }
 
 /**
@@ -44,9 +44,9 @@ void node_init_edges(node* n_ref, array neighbours)
 {
     node* neighbour;    // The neighbour the edge belongs to.
     edge* edges;    // The array of edges
-    int x;  // x coordinate of the neighbour.
-    int y;  // y coordinate of the neighbour.
-    int z;  // z coordinate of the neighbour.
+    uint8_t x;  // x coordinate of the neighbour.
+    uint8_t y;  // y coordinate of the neighbour.
+    uint8_t z;  // z coordinate of the neighbour.
     
     // Allocating memory for all the edges.
     edges = (edge*) malloc(array_size(neighbours) * sizeof(edge));
@@ -149,7 +149,7 @@ void node_set_came_from(node* n, node* came_from)
  * Sets the estimated total cost of a path if the path were to go 
  * through the node at the provided reference.
  */
-void node_set_f(node* n, uint32_t f)
+void node_set_f(node* n, uint64_t f)
 {
     (*n)->f = f;
 }
@@ -158,7 +158,7 @@ void node_set_f(node* n, uint32_t f)
  * Sets the cost of a path from the path's starting point to
  * the node at the provided reference.
  */
-void node_set_g(node* n, uint32_t g)
+void node_set_g(node* n, uint64_t g)
 {
     (*n)->g = g;
 }
@@ -172,13 +172,13 @@ void node_add_edge(node* from_ref, node* to_ref, uint8_t weight)
 {
     bool already_neighbours = false; // Whether the two provided nodes are already neighbours
     edge* e_ref;    // The edge seperating the nodes
-    uint16_t x; // The x coordinate of the node an edge belongs to.
-    uint16_t y; // The y coordinate of the node an edge belongs to.
-    uint16_t z; // The z coordinate of the node an edge belongs to.
-    
+    uint8_t x; // The x coordinate of the node an edge belongs to.
+    uint8_t y; // The y coordinate of the node an edge belongs to.
+    uint8_t z; // The z coordinate of the node an edge belongs to.
+    uint32_t i; // The index of the current edge.
 
     // Determining if the nodes are already neighbours.
-    for (int i = 0 ; i < array_size((*from_ref)->edges); i++)
+    for (i = 0 ; i < array_size((*from_ref)->edges); i++)
     {
         // Getting the coordinates of the node the current edge
         // belongs to.
@@ -219,9 +219,9 @@ void node_add_edge(node* from_ref, node* to_ref, uint8_t weight)
 void node_remove_edge(node* from_ref, node* to_ref)
 {
     bool already_neighbours = false; // Whether the provided nodes are already neighbours.
-    uint16_t x; // The x coord of the node an edge belongs to.
-    uint16_t y; // The y coord of the node an edge belongs to.
-    uint16_t z; // The z coord of the node an edge belongs to.
+    uint8_t x; // The x coord of the node an edge belongs to.
+    uint8_t y; // The y coord of the node an edge belongs to.
+    uint8_t z; // The z coord of the node an edge belongs to.
 
     // Finding the neighbour to remove.
     for (int i = 0 ; i < array_size((*from_ref)->edges); i++)
@@ -255,6 +255,6 @@ void node_remove_edge(node* from_ref, node* to_ref)
  */
 void node_print(node n)
 {
-    printf("{ node: x:%d, y:%d, z:%d, f:%ld, g:%ld }", 
+    printf("{ node: x:%d, y:%d, z:%d, f:%" PRIu64 ", g:%" PRIu64 " }", 
             n->x, n->y, n->z, n->f, n->g);
 }

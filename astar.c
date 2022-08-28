@@ -55,11 +55,11 @@ array astar_get_path(astar as)
  */
 uint32_t astar_h(node node_a, node node_b, enum graph_styles style)
 {
-	uint32_t cost;	// The estimated distance between the two nodes
-	uint16_t dx;	// The absolute difference of the x axes.
-	uint16_t dy;	// The absolute difference of the y axes.
-	uint16_t dz;	// The absolute difference of the z axes.
-	uint16_t min; 	// The minimum absolute difference out of all the axes.
+	uint64_t cost;	// The estimated distance between the two nodes
+	uint8_t dx;	// The absolute difference of the x axes.
+	uint8_t dy;	// The absolute difference of the y axes.
+	uint8_t dz;	// The absolute difference of the z axes.
+	uint8_t min; 	// The minimum absolute difference out of all the axes.
 	
 	// Calculating the absolute differences of each axis of the two nodes.
 	dx = abs(node_get_x(node_a) - node_get_x(node_b));
@@ -107,7 +107,7 @@ void astar_search(astar* as_ref, node* start, node* end)
 	node* neighbour;	// A neighbour of the current node on the path.
 	edge* e;	// The edge separating the current node and neighbour.
 	bool path_found = false;	// Whether a path has been found
-	uint32_t next_g;	// Cost from start to neighbour through the current node
+	uint64_t next_g;	// Cost from start to neighbour through the current node
 
 	// Initialising the array used to store the neighbours of the current node
 	// array_init(&neighbours);
