@@ -4,7 +4,7 @@
  * Demonstrates the use of the astar type.
  * 
  * Author: Richard Gale
- * Version: 28th August, 2022
+ * Version: 30th August, 2022
  */
 
 #include <stdio.h>
@@ -34,6 +34,7 @@ int main(int argc, char* argv[])
     astar_init(&as, &g);
 
     // Finding the shortest path.
+    printf("Searching for the shortest path...\n");
     astar_search(&as, graph_get_node(g, 0, 0, 0), graph_get_node(g, 2, 2, 2));
 
     // Printing the nodes that make up the shortest path.

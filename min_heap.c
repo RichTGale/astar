@@ -4,26 +4,30 @@
  * Data-structure and function definitions for a minimum heap.
  * 
  * Author: Richard Gale
- * Version: 28th August, 2022
+ * Version: 30th August, 2022
  */
 
 #include "min_heap.h"
 
+// Error codes
 #define HEAP_EMPTY_ERROR 1
+#define HEAP_FULL_ERROR 2
+
+#define MAX_CAPACITY UINT64_MAX // The number of value the heap can hold.
 
 /**
  * The data contained in the min_heap data-structure
  */
 struct min_heap_data {
     array heap;         // Stores the values in the heap.
-    enum types type;    // The type of data the min_heap stores
+    enum heap_types type;    // The type of data the min_heap stores
     uint64_t num_elems; // The number of elements in the heap.
 };
 
 /**
  * Initialises the min_heap at the provided reference.
  */
-void min_heap_init(min_heap* mh_ref, enum types t)
+void min_heap_init(min_heap* mh_ref, enum heap_types t)
 {
     *mh_ref = (min_heap) malloc(sizeof(struct min_heap_data));
     array_init(&(*mh_ref)->heap);
@@ -128,9 +132,18 @@ void min_heapify_up(min_heap* mh_ref, int i)
  */
 void min_heap_add(min_heap* mh_ref, void* data)
 {
-    array_push_back(&(*mh_ref)->heap, data);
-    min_heapify_up(mh_ref, (*mh_ref)->num_elems);
-    (*mh_ref)->num_elems++;
+    if ((*mh_ref)->num_elems < MAX_CAPACITY)
+    {
+        array_push_back(&(*mh_ref)->heap, data);
+        min_heapify_up(mh_ref, (*mh_ref)->num_elems);
+        (*mh_ref)->num_elems++;
+    }
+    else
+    {
+        printf("\nERROR: In function min_heap_add(): You attempted to "
+                "add a value to a heap that was at maximum capacity!\n");
+        exit(HEAP_FULL_ERROR);
+    }
 }
 
 /**

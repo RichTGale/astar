@@ -4,7 +4,7 @@
  * Data-structure and procedure declarations for a minimum heap.
  * 
  * Author: Richard Gale
- * Version: 28th August, 2022
+ * Version: 30th August, 2022
  */
 
 #ifndef MIN_HEAP_H
@@ -21,7 +21,7 @@
 /**
  * The types of data the min_heap can deal with.
  */
-enum types { INTEGER, NODE };
+enum heap_types { INTEGER, NODE };
 
 /**
  * The min_heap data structure.
@@ -31,7 +31,7 @@ typedef struct min_heap_data* min_heap;
 /**
  * Initialises the min_heap at the provided reference.
  */
-void min_heap_init(min_heap* mh_ref, enum types t);
+void min_heap_init(min_heap* mh_ref, enum heap_types t);
 
 /**
  * Frees the memory allocated to the min_heap at the provided reference.
