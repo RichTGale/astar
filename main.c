@@ -8,7 +8,6 @@
  */
 
 #include <stdio.h>
-#include <inttypes.h>
 
 #include "array.h"
 #include "node.h"
