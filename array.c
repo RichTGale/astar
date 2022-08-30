@@ -6,13 +6,18 @@
  * are added to it and removed from it.
  *
  * Author: Richard Gale
- * Version: 28th August, 2022
+ * Version: 30th August, 2022
  */
 
 #include "array.h"
 
+// Error codes
 #define INDEX_OUT_OF_BOUNDS_ERROR 1
-#define EMPTY_LIST_ERROR 2
+#define ARRAY_EMPTY_ERROR 2
+#define ARRAY_FULL_ERROR 3
+
+// Maximum capacity of the array
+#define MAX_CAPACITY UINT64_MAX
 
 /**
  * Data contained in the array data-structure
@@ -66,13 +71,11 @@ void* array_get_data(array head, uint64_t index)
 		if (head->next != NULL)
 		{
 			head = head->next;
-		} else
+		} 
+		else
 		{
-			printf(
-				"\nERROR: In function array_get_data(): "
-				"index %d out of bounds!\n", 
-				elem + 1
-			);
+			printf("\nERROR: In function array_get_data(): index %d "
+					"out of bounds!\n", index);
 			exit(INDEX_OUT_OF_BOUNDS_ERROR);
 		}
 	}
@@ -119,13 +122,12 @@ void* array_pop_front(array* head_ref)
 			// Re-initializing the array because we just destroyed the head
 			array_init(head_ref);
 		}
-	} else
+	} 
+	else
 	{
-		printf(
-			"\nERROR: In function arrary_pop_front: "
-			"Attempting to pop front of empty array!\n"
-		);
-		exit(EMPTY_LIST_ERROR);
+		printf("\nERROR: In function arrary_pop_front: Attempting to pop " 
+				"front of empty array!\n");
+		exit(ARRAY_EMPTY_ERROR);
 	}
 	return front;
 }
@@ -154,41 +156,21 @@ void* array_pop_back(array* head_ref)
 		if (size > 1)
 		{
 			*head_ref = NULL;
-		} else
+		} 
+		else
 		{
 			// Re-initializing the array because we just destroyed the head
 			array_init(head_ref);
 		}
-	} else
+	} 
+	else
 	{
-		printf(
-			"\nERROR: In function array_pop_back: "
-			"Attempting to pop back of empty array!\n"
-		);
-		exit(EMPTY_LIST_ERROR);
+		printf("\nERROR: In function array_pop_back: Attempting to pop "
+				"back of empty array!\n");
+		exit(ARRAY_EMPTY_ERROR);
 	}
 
 	return back;
-}
-
-/**
- * Adds a new element to the beginning of the array at
- * the provided array reference.
- */
-void array_push_front(array* head_ref, void* data)
-{
-	array new;	// The new element to be added to the list
-
-	if ((*head_ref)->data == NULL)
-	{
-		(*head_ref)->data = data;
-	} else
-	{
-		array_init(&new);
-		new->data = data;
-		new->next = *head_ref;
-		*head_ref = new;
-	}
 }
 
 /**
@@ -221,14 +203,41 @@ void* array_pop_data(array* head_ref, uint64_t index)
 	}
 	else
 	{
-		printf(
-			"\nERROR: In function array_pop_data(): "
-			"index %d out of bounds!\n", 
-			index
-			);
+		printf("\nERROR: In function array_pop_data(): index %d out "
+				"of bounds!\n", index);
 		exit(INDEX_OUT_OF_BOUNDS_ERROR);
 	}
 	return data;
+}
+
+/**
+ * Adds a new element to the beginning of the array at
+ * the provided array reference.
+ */
+void array_push_front(array* head_ref, void* data)
+{
+	array new;	// The new element to be added to the list
+
+	if (array_size(*head_ref) < MAX_CAPACITY)
+	{
+		if ((*head_ref)->data == NULL)
+		{
+			(*head_ref)->data = data;
+		} 
+		else
+		{
+			array_init(&new);
+			new->data = data;
+			new->next = *head_ref;
+			*head_ref = new;
+		}
+	}
+	else
+	{
+		printf("\nERROR: In function array_push_front(): Array reached "
+				"maximum capacity!\n");
+		exit(ARRAY_FULL_ERROR);
+	}
 }
 
 /**
@@ -237,18 +246,27 @@ void* array_pop_data(array* head_ref, uint64_t index)
  */
 void array_push_back(array* head_ref, void* data)
 {
-	if ((*head_ref)->data == NULL)
+	if (array_size(*head_ref) < MAX_CAPACITY)
 	{
-		(*head_ref)->data = data;
+		if ((*head_ref)->data == NULL)
+		{
+			(*head_ref)->data = data;
+		}
+		else
+		{
+			while ((*head_ref)->next != NULL)
+			{
+				head_ref = &(*head_ref)->next;
+			}
+			array_init(&(*head_ref)->next);
+			(*head_ref)->next->data = data;
+		}
 	}
 	else
 	{
-		while ((*head_ref)->next != NULL)
-		{
-			head_ref = &(*head_ref)->next;
-		}
-		array_init(&(*head_ref)->next);
-		(*head_ref)->next->data = data;
+		printf("\nERROR: In function array_push_back(): Array reached "
+				"maximum capacity!\n");
+		exit(ARRAY_FULL_ERROR);
 	}
 }
 
@@ -265,13 +283,11 @@ void array_set_data(array* head_ref, uint64_t index, void* data)
 		if ((*head_ref)->next != NULL)
 		{
 			head_ref = &(*head_ref)->next;
-		} else
+		} 
+		else
 		{
-			printf(
-				"\nERROR: In function array_set_data(): "
-				"index %d out of bounds!", 
-				elem
-			);
+			printf("\nERROR: In function array_set_data(): index %d "
+					"out of bounds!\n", index);
 			exit(INDEX_OUT_OF_BOUNDS_ERROR);
 		}
 	}
