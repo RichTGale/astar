@@ -5,7 +5,7 @@
  * Simulates the an edge of a graph-node.
  * 
  * Author: Richard Gale
- * Version: 28th August, 2022
+ * Version: 30th August, 2022
  */
 
 #ifndef EDGE_H
@@ -32,21 +32,21 @@ void edge_free(edge* e_ref);
 /**
  * Returns the x coordinate of the neighbour this edge is against.
  */
-uint16_t edge_get_x(edge e);
+uint8_t edge_get_x(edge e);
 
 /**
  * Returns the y coordinate of the neighbour this edge is against.
  */
-uint16_t edge_get_y(edge e);
+uint8_t edge_get_y(edge e);
 
 /**
  * Returns the z coordinate of the neighbour this edge is against.
  */
-uint16_t edge_get_z(edge e);
+uint8_t edge_get_z(edge e);
 
 /**
  * Returns the weight of the edge.
  */
-uint16_t edge_get_w(edge e);
+uint8_t edge_get_w(edge e);
 
 #endif // EDGE_H

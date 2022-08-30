@@ -4,7 +4,7 @@
  * Data structure and function definitions for a weighted graph node.
  * 
  * Author: Richard Gale
- * Version: 28th August, 2022 
+ * Version: 30th August, 2022 
  */
 
 #include "node.h"
@@ -47,13 +47,14 @@ void node_init_edges(node* n_ref, array neighbours)
     uint8_t x;  // x coordinate of the neighbour.
     uint8_t y;  // y coordinate of the neighbour.
     uint8_t z;  // z coordinate of the neighbour.
+    uint64_t e; // The index of the current edge.
     
     // Allocating memory for all the edges.
     edges = (edge*) malloc(array_size(neighbours) * sizeof(edge));
 
     // Initialising and adding the edge to the node provided
     // to this function.
-    for (uint32_t e = 0; e < array_size(neighbours); e++)
+    for (e = 0; e < array_size(neighbours); e++)
     {
         neighbour = (node*) array_get_data(neighbours, e);
         x = (*neighbour)->x;
@@ -69,11 +70,16 @@ void node_init_edges(node* n_ref, array neighbours)
  */
 void node_free(node* n_ref)
 {
-    for (uint32_t e = 0; e < array_size((*n_ref)->edges); e++)
+    uint64_t e; // The index of the current edge.
+
+    // Freeing the edges.
+    for (e = 0; e < array_size((*n_ref)->edges); e++)
     {
         edge_free(array_get_data((*n_ref)->edges, e));
     }
     array_free(&(*n_ref)->edges);
+
+    // Freeing the node.
     free(*n_ref);
 }
 
@@ -89,7 +95,7 @@ node* node_get_came_from(node n)
 /**
  * Returns the x coordinate of the provided node.
  */
-uint16_t node_get_x(node n)
+uint8_t node_get_x(node n)
 {
     return n->x;
 }
@@ -97,7 +103,7 @@ uint16_t node_get_x(node n)
 /**
  * Returns the y coordinate of the provided node.
  */
-uint16_t node_get_y(node n)
+uint8_t node_get_y(node n)
 {
     return n->y;
 }
@@ -105,7 +111,7 @@ uint16_t node_get_y(node n)
 /**
  * Returns the z coordinate of the provided node.
  */
-uint16_t node_get_z(node n)
+uint8_t node_get_z(node n)
 {
     return n->z;
 }
@@ -114,7 +120,7 @@ uint16_t node_get_z(node n)
  * Returns the estimated total cost of a path if
  * the path goes through the provided node.
  */
-uint32_t node_get_f(node n)
+uint64_t node_get_f(node n)
 {
     return n->f;
 }
@@ -122,7 +128,7 @@ uint32_t node_get_f(node n)
 /**
  * Returns the cost of a path from its start to the provided node.
  */
-uint32_t node_get_g(node n)
+uint64_t node_get_g(node n)
 {
     return n->g;
 }
@@ -175,16 +181,16 @@ void node_add_edge(node* from_ref, node* to_ref, uint8_t weight)
     uint8_t x; // The x coordinate of the node an edge belongs to.
     uint8_t y; // The y coordinate of the node an edge belongs to.
     uint8_t z; // The z coordinate of the node an edge belongs to.
-    uint32_t i; // The index of the current edge.
+    uint64_t e; // The index of the current edge.
 
     // Determining if the nodes are already neighbours.
-    for (i = 0 ; i < array_size((*from_ref)->edges); i++)
+    for (e = 0 ; e < array_size((*from_ref)->edges); e++)
     {
         // Getting the coordinates of the node the current edge
         // belongs to.
-        x = edge_get_x(*((edge*) array_get_data((*from_ref)->edges, i)));
-        y = edge_get_y(*((edge*) array_get_data((*from_ref)->edges, i)));
-        z = edge_get_z(*((edge*) array_get_data((*from_ref)->edges, i)));
+        x = edge_get_x(*((edge*) array_get_data((*from_ref)->edges, e)));
+        y = edge_get_y(*((edge*) array_get_data((*from_ref)->edges, e)));
+        z = edge_get_z(*((edge*) array_get_data((*from_ref)->edges, e)));
 
         if ((*to_ref)->x == x && (*to_ref)->y == y && (*to_ref)->z == z)
         {
@@ -222,20 +228,21 @@ void node_remove_edge(node* from_ref, node* to_ref)
     uint8_t x; // The x coord of the node an edge belongs to.
     uint8_t y; // The y coord of the node an edge belongs to.
     uint8_t z; // The z coord of the node an edge belongs to.
+    uint64_t e; // The index of the current edge.
 
     // Finding the neighbour to remove.
-    for (int i = 0 ; i < array_size((*from_ref)->edges); i++)
+    for (e = 0 ; e < array_size((*from_ref)->edges); e++)
     {
         // Getting the coordinates of the node the current edge
         // belongs to.
-        x = edge_get_x(*((edge*) array_get_data((*from_ref)->edges, i)));
-        y = edge_get_y(*((edge*) array_get_data((*from_ref)->edges, i)));
-        z = edge_get_z(*((edge*) array_get_data((*from_ref)->edges, i)));
+        x = edge_get_x(*((edge*) array_get_data((*from_ref)->edges, e)));
+        y = edge_get_y(*((edge*) array_get_data((*from_ref)->edges, e)));
+        z = edge_get_z(*((edge*) array_get_data((*from_ref)->edges, e)));
 
         if ((*to_ref)->x == x && (*to_ref)->y == y && (*to_ref)->z == z)
         {
             already_neighbours = true; // The nodes were alrady neighbours.
-            array_pop_data(&(*from_ref)->edges, i); // Removing the edge.
+            array_pop_data(&(*from_ref)->edges, e); // Removing the edge.
         }
     }
 

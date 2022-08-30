@@ -4,7 +4,7 @@
  * Data structure and procedure declarations for a weighted graph node.
  * 
  * Author: Richard Gale
- * Version: 28th August, 2022 
+ * Version: 30th August, 2022 
  */
 
 #ifndef NODE_H
@@ -49,28 +49,28 @@ node* node_get_came_from(node n);
 /**
  * Returns the x coordinate of the provided node.
  */
-uint16_t node_get_x(node n);
+uint8_t node_get_x(node n);
 
 /**
  * Returns the y coordinate of the provided node.
  */
-uint16_t node_get_y(node n);
+uint8_t node_get_y(node n);
 
 /**
  * Returns the z coordinate of the provided node.
  */
-uint16_t node_get_z(node n);
+uint8_t node_get_z(node n);
 
 /**
  * Returns the estimated total cost of a path if
  * the path goes through the provided node.
  */
-uint32_t node_get_f(node n);
+uint64_t node_get_f(node n);
 
 /**
  * Returns the cost of a path from its start to the provided node.
  */
-uint32_t node_get_g(node n);
+uint64_t node_get_g(node n);
 
 /**
  * Returns the edges of the supplied node,

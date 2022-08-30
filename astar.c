@@ -5,7 +5,7 @@
  * A* (A Star) search algorithm.
  * 
  * Author: RIchard Gale
- * Version: 28th August, 2022
+ * Version: 30th August, 2022
  */
 
 #include "astar.h"
@@ -108,6 +108,7 @@ void astar_search(astar* as_ref, node* start, node* end)
 	edge* e;	// The edge separating the current node and neighbour.
 	bool path_found = false;	// Whether a path has been found
 	uint64_t next_g;	// Cost from start to neighbour through the current node
+	uint64_t i; // The index of the edge we're assessing from the openset
 
 	// Initialising the array used to store the neighbours of the current node
 	// array_init(&neighbours);
@@ -132,8 +133,8 @@ void astar_search(astar* as_ref, node* start, node* end)
 			path_found = true;
 		} else
 		{
-			// Assessing each neighbour of the current node
-			for (int i = 0; i < array_size(node_get_edges(*current)); i++)
+			// Assessing each edge of the current node
+			for (i = 0; i < array_size(node_get_edges(*current)); i++)
 			{
 				// Assigning to some variables to make the code easier
 				// to read.

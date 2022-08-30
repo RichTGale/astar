@@ -5,7 +5,7 @@
  * three-dimensional weighted graph.
  * 
  * Author: Richard Gale
- * Version: 28th August, 2022
+ * Version: 30th August, 2022
  */
 
 #ifndef GRAPH_H
