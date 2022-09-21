@@ -1,11 +1,11 @@
 /**
  * graph.c
  * 
- * Data-structure and procedure declarations for
- * a three-dimensional weighted graph. 
+ * Data-structure and procedure declarations for a three-dimensional 
+ * weighted graph. 
  *
  * Author: Richard Gale
- * Version: 30th August, 2022
+ * Version: 21st September, 2022
  */
 
 #include "graph.h"
@@ -16,7 +16,7 @@
  * The data contained within the graph data-structure.
  */
 struct graph_data {
-    node*** nodes;      // The nodes that make up the graph.
+    node*** nodes;     // The nodes that make up the graph.
     uint8_t x_size;    // The size of the x axis.
     uint8_t y_size;    // The size of the y axis.
     uint8_t z_size;    // The size of the z axis.
@@ -27,48 +27,48 @@ struct graph_data {
 };
 
 /**
- * Returns true if the provided coordinates are within 
- * the bounds of the dimentions of the graph.
+ * Returns true if the provided coordinate is within the bounds of the graph.
  */
 bool graph_valid_coord(graph g, int16_t x , int16_t y , int16_t z)
 {
+    // Whether the coordinate is within the bounds of the graph.
     bool is_valid_coord = false;
 
     if (x >= 0 && x < (int16_t) g->x_size &&
         y >= 0 && y < (int16_t) g->y_size &&
         z >= 0 && z < (int16_t) g->z_size)
     {
-        // The provided coordinates are withn the bounds 
-        // of the dimensions graph.
+        // The provided coordinate is withn the bounds of the graph.
         is_valid_coord = true;
     }
+
+    // Returning whether the coordinate was within the bounds of the graph.
     return is_valid_coord;
 }
 
 /**
- * Returns a reference to the node in the graph at 
- * the provided x, y, z coordinates.
+ * Returns a reference to the graph-node at the provided coordinate.
  */
 node* graph_get_node(graph g, uint8_t x, uint8_t y, uint8_t z)
 {
-    node* n;    // The node at the provided coordinates.
+    node* n;    // A reference to the node at the provided corrdinate.
 
     if (graph_valid_coord(g, (int16_t) x, (int16_t) y, (int16_t) z))
     {
-        // The provided coordinates are valid so we can
-        // proceed to getting the node.
+        // The provided coordinate is within the bounds of the graph
+        // so we are assigning its address to our pointer.
         n = &(g->nodes[x][y][z]);
     }
     else
     {
-        // The provided coordinates are not valid coordinates
-        // so we're going to print an error message and exit.
+        // The provided coordinates are not within the bounds of the graph
+        // so we're printing an error message and exiting.
         printf("\nERROR: In function graph_get_node(): "
                 "Invalid node coordinates: { %d, %d, %d }!\n", x, y, z);
         exit(INVALID_COORDINATE_ERROR);
     }
 
-    // Returning the node reference
+    // Returning the reference to the node at the provided coordinates.
     return n;
 }
 
@@ -78,7 +78,7 @@ node* graph_get_node(graph g, uint8_t x, uint8_t y, uint8_t z)
  */
 bool manhattan_relationship(int8_t xoffset, int8_t yoffset, int8_t zoffset)
 {
-    bool is_manhattan; // Whether the relationship is manhattan.
+    bool is_manhattan = false; // Whether the relationship is manhattan.
 
     if ((xoffset == 0 && yoffset == 0 && zoffset == 1) ||
         (xoffset == 0 && yoffset == 1 && zoffset == 0) ||
@@ -87,6 +87,8 @@ bool manhattan_relationship(int8_t xoffset, int8_t yoffset, int8_t zoffset)
         is_manhattan = true; // The relationship is manhattan.
     }
 
+    // Returning whether the relationship of the provided offsets is
+    // consistent with that of manhattan neighbours.
     return is_manhattan;
 }
 
@@ -96,16 +98,18 @@ bool manhattan_relationship(int8_t xoffset, int8_t yoffset, int8_t zoffset)
  */
 bool diagonal_relationship(int8_t xoffset, int8_t yoffset, int8_t zoffset)
 {
-    bool is_diagonal; // Whether the relationship is diagonal.
+    bool is_diagonal = false; // Whether the relationship is diagonal.
 
     if ((manhattan_relationship(xoffset, yoffset, zoffset)) ||
         ((xoffset == 1 && yoffset == 1 && zoffset != 0) ||
-         (xoffset == 1 && yoffset == 0 && zoffset != 1) ||
-         (xoffset == 0 && yoffset == 1 && zoffset != 1)))
+        (xoffset == 1 && yoffset == 0 && zoffset != 1) ||
+        (xoffset == 0 && yoffset == 1 && zoffset != 1)))
     {
-        is_diagonal = DIAGONAL; // There is a diagonal relationship.
+        is_diagonal = true; // There is a diagonal relationship.
     }
 
+    // Returning whether the relationship of the provided offsets is
+    // consistent with that of diagonal neighbours.
     return is_diagonal;
 }
 
@@ -203,8 +207,8 @@ void graph_init_nodes(graph* g_ref)
         {
             for (z = 0; z < (*g_ref)->z_size; z++)
             {
-                // Initialising the manhattan style edges of the 
-                // node at the coordinates {x,y,z}.
+                // Initialising the edges of the node at the 
+                // coordinate {x,y,z}.
                 graph_init_node_edges(g_ref, &(*g_ref)->nodes[x][y][z]);
             }
         }
@@ -249,16 +253,16 @@ void graph_free(graph* g_ref)
         {
             for (z = 0; z < (*g_ref)->z_size; z++)
             {
-                // Freeing the node at coordinates {x,y,z}.
+                // Freeing the node at coordinate {x,y,z}.
                 node_free(&(*g_ref)->nodes[x][y][z]);
             }
-            // Freeing the memory allocated to the nodes' z axis.
+            // Freeing the memory allocated to the z axis.
             free((*g_ref)->nodes[x][y]);
         }
-        // Freeing the memory allocated to the nodes' y axis.
+        // Freeing the memory allocated to the y axis.
         free((*g_ref)->nodes[x]);
     }
-    // Freeing the memory allocated to the nodes' x axis.
+    // Freeing the memory allocated to the x axis.
     free((*g_ref)->nodes);
 
     // Freeing the graph

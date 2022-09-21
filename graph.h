@@ -5,7 +5,7 @@
  * three-dimensional weighted graph.
  * 
  * Author: Richard Gale
- * Version: 30th August, 2022
+ * Version: 21st September, 2022
  */
 
 #ifndef GRAPH_H
@@ -43,8 +43,7 @@ void graph_init(graph* g_ref, uint8_t x_size, uint8_t y_size,
 void graph_free(graph* g);
 
 /**
- * Returns a reference to the node in the graph at 
- * the provided x, y, z coordinates.
+ * Returns a reference to the graph-node at the provided coordinate.
  */
 node* graph_get_node(graph g, uint8_t x, uint8_t y, uint8_t z);
 
