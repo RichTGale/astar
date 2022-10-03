@@ -1,1 +1,0 @@
-/usr/bin/cc -g CMakeFiles/astar.dir/array.c.o CMakeFiles/astar.dir/astar.c.o CMakeFiles/astar.dir/edge.c.o CMakeFiles/astar.dir/graph.c.o CMakeFiles/astar.dir/main.c.o CMakeFiles/astar.dir/min_heap.c.o CMakeFiles/astar.dir/node.c.o -o astar 

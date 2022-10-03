@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
 {
     astar as;   // The astar.
     graph g;    // The graph.
-    
+
     // Initialising and printing the graph.
     graph_init(&g, 3, 3, 3, MANHATTAN);
     graph_print(g);

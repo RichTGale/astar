@@ -1,4 +1,1 @@
 %compile_commands.json
---target=/usr/bin/gcc
-%c -std=c11
-%h
