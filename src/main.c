@@ -24,10 +24,10 @@ int main(int argc, char* argv[])
     graph_print(g);
 
     // Connecting the starting node to the graph's central node.
-    graph_add_edge(graph_get_node(g, 0, 0, 0), graph_get_node(g, 1, 1, 1), 1);
+//    graph_add_edge(graph_get_node(g, 0, 0, 0), graph_get_node(g, 1, 1, 1), 1);
 
     // Removing an edge
-    graph_remove_edge(graph_get_node(g, 1, 1, 1), graph_get_node(g, 2, 1, 1));
+//    graph_remove_edge(graph_get_node(g, 1, 1, 1), graph_get_node(g, 2, 1, 1));
 
     // Initialising the astar.
     astar_init(&as, &g);
