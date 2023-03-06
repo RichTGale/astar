@@ -278,6 +278,26 @@ enum graph_styles graph_get_style(graph g)
 }
 
 /**
+ * Adds a connection from one graph node to another, considering 
+ * it as a neighbour.
+ * Note, this creates a one-way connection.
+ */
+void  graph_add_edge(node* from_ref, node* to_ref, uint8_t weight)
+{
+    node_add_edge(from_ref, to_ref, weight);
+}
+
+/**
+ * Disconnects one graph node from another, stopping
+ * them from considered neighbours.
+ * Note, this is a one-way disconnection.
+ */
+void graph_remove_edge(node* from_ref, node* to_ref) 
+{
+    node_remove_edge(from_ref, to_ref);
+}
+
+/**
  * Prints the graph.
  */
 void graph_print(graph g)

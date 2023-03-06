@@ -170,6 +170,94 @@ void node_set_g(node* n, uint64_t g)
 }
 
 /**
+ * Adds a connection from one graph node to another, considering 
+ * it as a neighbour.
+ * Note, this creates a one-way connection.
+ */
+void node_add_edge(node* from_ref, node* to_ref, uint8_t weight)
+{
+    bool already_neighbours = false; // Whether the two provided nodes are already neighbours
+    edge* e_ref;    // The edge seperating the nodes
+    uint8_t x; // The x coordinate of the node an edge belongs to.
+    uint8_t y; // The y coordinate of the node an edge belongs to.
+    uint8_t z; // The z coordinate of the node an edge belongs to.
+    uint64_t e; // The index of the current edge.
+
+    // Determining if the nodes are already neighbours.
+    for (e = 0 ; e < array_size((*from_ref)->edges); e++)
+    {
+        // Getting the coordinates of the node the current edge
+        // belongs to.
+        x = edge_get_x(*((edge*) array_get_data((*from_ref)->edges, e)));
+        y = edge_get_y(*((edge*) array_get_data((*from_ref)->edges, e)));
+        z = edge_get_z(*((edge*) array_get_data((*from_ref)->edges, e)));
+
+        if ((*to_ref)->x == x && (*to_ref)->y == y && (*to_ref)->z == z)
+        {
+            already_neighbours = true; // The nodes were already neighbours.
+        }
+    }
+
+    if (!already_neighbours)
+    {
+        // Initialising and adding the neighbour as an edge.
+        e_ref = (edge*) malloc(sizeof(edge));
+        edge_init(&(e_ref[0]), (*to_ref)->x, (*to_ref)->y, 
+                                        (*to_ref)->z, weight);
+        array_push_back(&(*from_ref)->edges, &(e_ref[0]));
+    }
+    else
+    {
+        // The node was already a neighbour so we are printing a warning.
+        printf("\nWARNING: In function node_add_edge(): "
+            "Node at coords (%d,%d,%d) was already a neighbour of the "
+            "node at coords (%d,%d,%d) and wasn't added again!\n", 
+            node_get_x(*to_ref), node_get_y(*to_ref), node_get_z(*to_ref), 
+            node_get_x(*from_ref), node_get_y(*from_ref), node_get_z(*from_ref));
+    }
+}
+
+/**
+ * Removes a connection from node from another, stopping
+ * them from considered neighbours.
+ * Note, this is a one-way disconnection.
+ */
+void node_remove_edge(node* from_ref, node* to_ref)
+{
+    bool already_neighbours = false; // Whether the provided nodes are already neighbours.
+    uint8_t x; // The x coord of the node an edge belongs to.
+    uint8_t y; // The y coord of the node an edge belongs to.
+    uint8_t z; // The z coord of the node an edge belongs to.
+    uint64_t e; // The index of the current edge.
+
+    // Finding the neighbour to remove.
+    for (e = 0 ; e < array_size((*from_ref)->edges); e++)
+    {
+        // Getting the coordinates of the node the current edge
+        // belongs to.
+        x = edge_get_x(*((edge*) array_get_data((*from_ref)->edges, e)));
+        y = edge_get_y(*((edge*) array_get_data((*from_ref)->edges, e)));
+        z = edge_get_z(*((edge*) array_get_data((*from_ref)->edges, e)));
+
+        if ((*to_ref)->x == x && (*to_ref)->y == y && (*to_ref)->z == z)
+        {
+            already_neighbours = true; // The nodes were alrady neighbours.
+            array_pop_data(&(*from_ref)->edges, e); // Removing the edge.
+        }
+    }
+
+    if (!already_neighbours)
+    {
+        // The node wasn't a neighbour so we are printing a warning.
+        printf("\nWARNING: In function node_remove_edge(): "
+            "Node at coords (%d,%d,%d) wasn't a neighbour of the "
+            "node at coords (%d,%d,%d) so it wasn't removed!\n", 
+            node_get_x(*to_ref), node_get_y(*to_ref), node_get_z(*to_ref), 
+            node_get_x(*from_ref), node_get_y(*from_ref), node_get_z(*from_ref));
+    }
+}
+
+/**
  * Prints the node.
  */
 void node_print(node n)

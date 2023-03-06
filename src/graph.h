@@ -53,6 +53,20 @@ node* graph_get_node(graph g, uint8_t x, uint8_t y, uint8_t z);
 enum graph_styles graph_get_style(graph g);
 
 /**
+ * Adds a connection from one graph node to another, considering 
+ * it as a neighbour.
+ * Note, this creates a one-way connection.
+ */
+void graph_add_edge(node* from_ref, node* to_ref, uint8_t weight);
+
+/**
+ * Disconnects one graph node from another, stopping
+ * them from considered neighbours.
+ * Note, this is a one-way disconnection.
+ */
+void graph_remove_edge(node* from_ref, node* to_ref);
+
+/**
  * Prints the graph.
  */
 void graph_print(graph g);
