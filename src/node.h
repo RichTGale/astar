@@ -96,20 +96,6 @@ void node_set_f(node* n, uint64_t f);
 void node_set_g(node* n, uint64_t g);
 
 /**
- * Adds a connection from one node to another, considering 
- * it as a neighbour.
- * Note, this creates a one-way connection.
- */
-void node_add_edge(node* from_ref, node* to_ref, uint8_t weight);
-
-/**
- * Removes a connection from node from another, stopping
- * them from considered neighbours.
- * Note, this is a one-way disconnection.
- */
-void node_remove_edge(node* from_ref, node* to_ref);
-
-/**
  * Prints the node.
  */
 void node_print(node n);
