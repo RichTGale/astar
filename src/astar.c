@@ -5,7 +5,7 @@
  * A* (A Star) search algorithm.
  * 
  * Author: RIchard Gale
- * Version: 30th August, 2022
+ * Version: 11th March, 2023
  */
 
 #include "astar.h"

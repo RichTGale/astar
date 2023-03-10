@@ -4,7 +4,7 @@
  * Data structure and function definitions for a weighted graph node.
  * 
  * Author: Richard Gale
- * Version: 30th August, 2022 
+ * Version: 11th March, 2023
  */
 
 #include "node.h"
