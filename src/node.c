@@ -57,11 +57,16 @@ void node_init_edges(node* n_ref, array neighbours)
     for (e = 0; e < array_size(neighbours); e++)
     {
         neighbour = (node*) array_get_data(neighbours, e);
-        x = (*neighbour)->x;
-        y = (*neighbour)->y;
-        z = (*neighbour)->z;
+        x = (*n_ref)->x;
+        y = (*n_ref)->y;
+        z = (*n_ref)->z;
+
+        // TODO: Here is where we determine the cost of moving from the this 
+        // node into the neighbouring node. We give the cost to the 
+        // neighbouring node's edge.
+        // At the moment, every edge has a cost of 1 (one).
         edge_init(&(edges[e]), x, y, z, 1);
-        array_push_back(&(*n_ref)->edges, &(edges[e]));
+        array_push_back(&(*neighbour)->edges, &(edges[e]));
     }
 }
 

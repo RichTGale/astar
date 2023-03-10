@@ -131,7 +131,8 @@ void astar_search(astar* as_ref, node* start, node* end)
 			// Reconstructing the shortest path
 			astar_reconstruct_path(as_ref, start, current);
 			path_found = true;
-		} else
+		} 
+        else
 		{
 			// Assessing each edge of the current node
 			for (i = 0; i < array_size(node_get_edges(*current)); i++)

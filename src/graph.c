@@ -82,7 +82,10 @@ bool manhattan_relationship(int8_t xoffset, int8_t yoffset, int8_t zoffset)
 
     if ((xoffset == 0 && yoffset == 0 && zoffset == 1) ||
         (xoffset == 0 && yoffset == 1 && zoffset == 0) ||
-        (xoffset == 1 && yoffset == 0 && zoffset == 0))
+        (xoffset == 1 && yoffset == 0 && zoffset == 0) ||
+        (xoffset == 0 && yoffset == 0 && zoffset == -1) ||
+        (xoffset == 0 && yoffset == -1 && zoffset == 0) ||
+        (xoffset == -1 && yoffset == 0 && zoffset == 0))
     {
         is_manhattan = true; // The relationship is manhattan.
     }
@@ -103,7 +106,10 @@ bool diagonal_relationship(int8_t xoffset, int8_t yoffset, int8_t zoffset)
     if ((manhattan_relationship(xoffset, yoffset, zoffset)) ||
         ((xoffset == 1 && yoffset == 1 && zoffset != 0) ||
         (xoffset == 1 && yoffset == 0 && zoffset != 1) ||
-        (xoffset == 0 && yoffset == 1 && zoffset != 1)))
+        (xoffset == 0 && yoffset == 1 && zoffset != 1) ||
+        (xoffset == -1 && yoffset == -1 && zoffset != 0) ||
+        (xoffset == -1 && yoffset == 0 && zoffset != -1) ||
+        (xoffset == 0 && yoffset == -1 && zoffset != -1)))
     {
         is_diagonal = true; // There is a diagonal relationship.
     }
