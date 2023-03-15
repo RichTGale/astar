@@ -103,6 +103,7 @@ void astar_reconstruct_path(astar* as, node* start, node* current)
  */
 void astar_search(astar* as_ref, node* start, node* end)
 {
+    array edges;
 	node* current;	// The current node on the path
 	node* neighbour;	// A neighbour of the current node on the path.
 	edge* e;	// The edge separating the current node and neighbour.
@@ -142,10 +143,20 @@ void astar_search(astar* as_ref, node* start, node* end)
 				e = array_get_data(node_get_edges(*current), i);
 				neighbour = graph_get_node(*(*as_ref)->g_ref, edge_get_x(*e), 
 											edge_get_y(*e), edge_get_z(*e));
-
+                edges = node_get_edges(*neighbour);
+                for (int j = 0; j < array_size(edges); j++)
+                {
+                    e = (edge*) array_get_data(edges, j);
+                    if (edge_get_x(*e) == node_get_x(*current) &&
+                        edge_get_y(*e) == node_get_y(*current) &&
+                        edge_get_z(*e) == node_get_z(*current))
+                    {
+                        break;
+                    }
+                }
 				// Measuring the cost of this path to the neighbour.
 				next_g = node_get_g(*current) + edge_get_w(*e);
-				if (next_g < node_get_g(*neighbour))
+				if (edge_get_w(*e) != 0 && next_g < node_get_g(*neighbour))
 				{
 					// This path to the neighbour is better than any previous 
 					// one so we are recording it.
