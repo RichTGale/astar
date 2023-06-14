@@ -5,7 +5,7 @@
  * three-dimensional weighted graph.
  * 
  * Author: Richard Gale
- * Version: 21st September, 2022
+ * Version: 15th June, 2023
  */
 
 #ifndef GRAPH_H
@@ -24,7 +24,6 @@
  * the neighbour of another graph-node.
  */
 enum graph_styles { MANHATTAN, DIAGONAL };
-
 
 /**
  * The graph data structure.

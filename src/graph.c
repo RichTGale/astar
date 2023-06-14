@@ -5,7 +5,7 @@
  * weighted graph. 
  *
  * Author: Richard Gale
- * Version: 11th March, 2023
+ * Version: 15th June, 2023
  */
 
 #include "graph.h"

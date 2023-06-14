@@ -5,7 +5,7 @@
  * an A* (A Star) search algorithm.
  * 
  * Author: Richard Gale
- * Version: 30th August, 2022
+ * Version: 15th June, 2023
  */
 
 #ifndef ASTAR_H

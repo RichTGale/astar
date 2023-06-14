@@ -5,7 +5,7 @@
  * A* (A Star) search algorithm.
  * 
  * Author: RIchard Gale
- * Version: 11th March, 2023
+ * Version: 15th June, 2023
  */
 
 #include "astar.h"
@@ -14,9 +14,9 @@
  * The data contained within the astar data-structure.
  */
 struct astar_data {
-	graph* g_ref;		// The graph.
-	min_heap openset;	// The openset.
-	array path;			// The nodes that make up the shortest path.
+    graph* g_ref;		// The graph.
+    min_heap openset;	// The openset.
+    array path;			// The nodes that make up the shortest path.
 };
 
 /**
@@ -24,10 +24,10 @@ struct astar_data {
  */
 void astar_init(astar* as_ref, graph* g_ref)
 {
-	*as_ref = (astar) malloc(sizeof(struct astar_data));
-	(*as_ref)->g_ref = g_ref;
-	min_heap_init(&(*as_ref)->openset, NODE);
-	array_init(&(*as_ref)->path);
+    *as_ref = (astar) malloc(sizeof(struct astar_data));
+    (*as_ref)->g_ref = g_ref;
+    min_heap_init(&(*as_ref)->openset, NODE);
+    array_init(&(*as_ref)->path);
 }
 
 /**
@@ -35,8 +35,8 @@ void astar_init(astar* as_ref, graph* g_ref)
  */ 
 void astar_free(astar* as_ref)
 {
-	min_heap_free(&(*as_ref)->openset);
-	array_free(&(*as_ref)->path);
+    min_heap_free(&(*as_ref)->openset);
+    array_free(&(*as_ref)->path);
     free(*as_ref);
 }
 
@@ -46,7 +46,7 @@ void astar_free(astar* as_ref)
  */
 array astar_get_path(astar as)
 {
-	return as->path;
+    return as->path;
 }
 
 /**
@@ -55,30 +55,31 @@ array astar_get_path(astar as)
  */
 uint32_t astar_h(node node_a, node node_b, enum graph_styles style)
 {
-	uint64_t cost;	// The estimated distance between the two nodes
-	uint8_t dx;	// The absolute difference of the x axes.
-	uint8_t dy;	// The absolute difference of the y axes.
-	uint8_t dz;	// The absolute difference of the z axes.
-	uint8_t min; 	// The minimum absolute difference out of all the axes.
+    uint64_t cost;	// The estimated distance between the two nodes
+    uint8_t dx;	// The absolute difference of the x axes.
+    uint8_t dy;	// The absolute difference of the y axes.
+    uint8_t dz;	// The absolute difference of the z axes.
+    uint8_t min; 	// The minimum absolute difference out of all the axes.
 	
-	// Calculating the absolute differences of each axis of the two nodes.
-	dx = abs(node_get_x(node_a) - node_get_x(node_b));
-	dy = abs(node_get_y(node_a) - node_get_y(node_b));
-	dz = abs(node_get_z(node_a) - node_get_z(node_b));
+    // Calculating the absolute differences of each axis of the two nodes.
+    dx = abs(node_get_x(node_a) - node_get_x(node_b));
+    dy = abs(node_get_y(node_a) - node_get_y(node_b));
+    dz = abs(node_get_z(node_a) - node_get_z(node_b));
 
-	// Calculating the estimated cost
-	if (style == MANHATTAN)
-	{
-		cost = dx + dy + dz; 
-	} else if (style == DIAGONAL)
-	{
-		min = dx < dy ? dx : dy;
-		min = min < dz ? min : dz;
-		cost = (dx + dy + dz) + (1 - 3) * min;
-	} 
+    // Calculating the estimated cost
+    if (style == MANHATTAN)
+    {
+        cost = dx + dy + dz; 
+    } 
+    else if (style == DIAGONAL)
+    {
+        min = dx < dy ? dx : dy;
+        min = min < dz ? min : dz;
+        cost = (dx + dy + dz) + (1 - 3) * min;
+    }
 
-	// Returning the estimated cost.
-	return cost;
+    // Returning the estimated cost.
+    return cost;
 }
 
 /**
@@ -88,13 +89,13 @@ uint32_t astar_h(node node_a, node node_b, enum graph_styles style)
  */
 void astar_reconstruct_path(astar* as, node* start, node* current)
 {
-	array_push_front(&(*as)->path, current);
+    array_push_front(&(*as)->path, current);
 
-	while(current != start)
-	{
-		current = node_get_came_from(*current);
-		array_push_front(&(*as)->path, current);
-	}
+    while(current != start)
+    {
+        current = node_get_came_from(*current);
+        array_push_front(&(*as)->path, current);
+    }
 }
 
 /**
@@ -104,7 +105,7 @@ void astar_reset(astar* as_ref)
 {
     // Resetting the graph
     graph_reset((*as_ref)->g_ref);
-	
+
     // Ensuring the priority queue is empty
     while (!(min_heap_is_empty((*as_ref)->openset)))
     {
@@ -124,46 +125,49 @@ void astar_reset(astar* as_ref)
  */
 void astar_search(astar* as_ref, node* start, node* end)
 {
-    array edges;
-	node* current;	// The current node on the path
-	node* neighbour;	// A neighbour of the current node on the path.
-	edge* e;	// The edge separating the current node and neighbour.
-	bool path_found = false;	// Whether a path has been found
-	uint64_t next_g;	// Cost from start to neighbour through the current node
-	uint64_t i; // The index of the edge we're assessing from the openset
+    array edges;        // The edges of a neighbouring node
+    node* current;      // The current node on the path
+    node* neighbour;    // A neighbour of the current node on the path.
+    edge* e;            // The edge separating the current node and neighbour.
+    bool path_found;    // Whether a path has been found
+    uint64_t next_g;    // Cost from start to neighbour through the current node
+    uint64_t i;         // The index of the edge we're assessing from the openset
 
     // Resetting the astar to its original state
     astar_reset(as_ref);
 
-	// Adding the start node to the minimum heap
-	min_heap_add(&(*as_ref)->openset, start);
+    // A path has not yet been found
+    path_found = false;
 
-	// Setting the start node's distance from the start node
-	node_set_g(start, 0);
+    // Adding the start node to the minimum heap
+    min_heap_add(&(*as_ref)->openset, start);
 
-	// Searching the graph
-	while (!(min_heap_is_empty((*as_ref)->openset)) && !path_found)
-	{
-		// Getting the currently known node with the lowest
-		// estimated cost or distance from the start node to the end node
-		current = (node*) min_heap_pop_min(&(*as_ref)->openset);
-		
-		if (current == end)
-		{
-			// Reconstructing the shortest path
-			astar_reconstruct_path(as_ref, start, current);
-			path_found = true;
-		} 
+    // Setting the start node's distance from the start node
+    node_set_g(start, 0);
+
+    // Searching the graph
+    while (!(min_heap_is_empty((*as_ref)->openset)) && !path_found)
+    {
+        // Getting the currently known node that has the lowest
+        // estimated cost or distance from the start node to the end node
+        current = (node*) min_heap_pop_min(&(*as_ref)->openset);
+
+        if (current == end)
+        {
+            // Reconstructing the shortest path
+            astar_reconstruct_path(as_ref, start, current);
+            path_found = true;
+        }
         else
-		{
-			// Assessing each edge of the current node
-			for (i = 0; i < array_size(node_get_edges(*current)); i++)
-			{
-				// Assigning to some variables to make the code easier
-				// to read.
-				e = array_get_data(node_get_edges(*current), i);
-				neighbour = graph_get_node(*(*as_ref)->g_ref, edge_get_x(*e), 
-											edge_get_y(*e), edge_get_z(*e));
+        {
+            // Assessing each edge of the current node
+            for (i = 0; i < array_size(node_get_edges(*current)); i++)
+            {
+                // Assigning to some variables to make the code easier
+                // to read.
+                e = array_get_data(node_get_edges(*current), i);
+                neighbour = graph_get_node(*(*as_ref)->g_ref, edge_get_x(*e), 
+                                            edge_get_y(*e), edge_get_z(*e));
                 edges = node_get_edges(*neighbour);
                 for (int j = 0; j < array_size(edges); j++)
                 {
@@ -175,31 +179,31 @@ void astar_search(astar* as_ref, node* start, node* end)
                         break;
                     }
                 }
-				// Measuring the cost of this path to the neighbour.
-				next_g = node_get_g(*current) + edge_get_w(*e);
-				if (edge_get_w(*e) != 0 && next_g < node_get_g(*neighbour))
-				{
-					// This path to the neighbour is better than any previous 
-					// one so we are recording it.
-					node_set_came_from(neighbour, current);
-					node_set_g(neighbour, next_g);
+                // Measuring the cost of this path to the neighbour.
+                next_g = node_get_g(*current) + edge_get_w(*e);
+                if (edge_get_w(*e) != 0 && next_g < node_get_g(*neighbour))
+                {
+                    // This path to the neighbour is better than any previous 
+                    // one so we are recording it.
+                    node_set_came_from(neighbour, current);
+                    node_set_g(neighbour, next_g);
 
-					// Setting the estimation for total cost of the path if it 
-					// goes through neighbour.
-					node_set_f(neighbour, next_g + astar_h(*neighbour, *end, 
-										graph_get_style(*(*as_ref)->g_ref)));
+                    // Setting the estimation for total cost of the path if it 
+                    // goes through neighbour.
+                    node_set_f(neighbour, next_g + astar_h(*neighbour, *end, 
+                                        graph_get_style(*(*as_ref)->g_ref)));
 
-					// We only need to add the neighbour to the openset
-					// if it's not yet in there.
-					if (!min_heap_val_exists((*as_ref)->openset, neighbour))
-					{
-						// Adding the neighbour to openset.
-						min_heap_add(&(*as_ref)->openset, neighbour);
-					}
-				}
-			}
-		}
-	}
+                    // We only need to add the neighbour to the openset
+                    // if it's not yet in there.
+                    if (!min_heap_val_exists((*as_ref)->openset, neighbour))
+                    {
+                        // Adding the neighbour to openset.
+                        min_heap_add(&(*as_ref)->openset, neighbour);
+                    }
+                }
+            }
+        }
+    }
 }
 
 
