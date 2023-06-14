@@ -98,6 +98,27 @@ void astar_reconstruct_path(astar* as, node* start, node* current)
 }
 
 /**
+ * Resets the astar to its original state.
+ */
+void astar_reset(astar* as_ref)
+{
+    // Resetting the graph
+    graph_reset((*as_ref)->g_ref);
+	
+    // Ensuring the priority queue is empty
+    while (!(min_heap_is_empty((*as_ref)->openset)))
+    {
+        min_heap_pop_min(&(*as_ref)->openset);
+    }
+
+    // Ensuring the path is empty
+    while (array_size((*as_ref)->path) > 0)
+    {
+        array_pop_front(&(*as_ref)->path);
+    }
+}
+
+/**
  * A* search algorithm. Searches for the shortest
  * path from the start node to the end node.
  */
@@ -111,8 +132,8 @@ void astar_search(astar* as_ref, node* start, node* end)
 	uint64_t next_g;	// Cost from start to neighbour through the current node
 	uint64_t i; // The index of the edge we're assessing from the openset
 
-	// Initialising the array used to store the neighbours of the current node
-	// array_init(&neighbours);
+    // Resetting the astar to its original state
+    astar_reset(as_ref);
 
 	// Adding the start node to the minimum heap
 	min_heap_add(&(*as_ref)->openset, start);

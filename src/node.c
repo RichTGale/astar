@@ -38,6 +38,16 @@ void node_init(node* n_ref, uint8_t x, uint8_t y, uint8_t z)
 }
 
 /**
+ * Resets the node to its original state.
+ */
+void node_reset(node* n_ref)
+{
+    (*n_ref)->came_from = NULL;
+    (*n_ref)->f = UINT64_MAX;
+    (*n_ref)->g = UINT64_MAX;
+}
+
+/**
  * Initialises the node's edges.
  */
 void node_init_edges(node* n_ref, array neighbours)

@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 
     // Initialising and printing the graph.
     graph_init(&g, 3, 3, 3, MANHATTAN);
-    graph_print(g);
+//    graph_print(g);
 
     // Connecting the starting node to the graph's central node.
 //    graph_add_edge(graph_get_node(g, 0, 0, 0), graph_get_node(g, 1, 1, 1), 1);

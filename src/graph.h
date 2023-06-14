@@ -38,6 +38,11 @@ void graph_init(graph* g_ref, uint8_t x_size, uint8_t y_size,
                         uint8_t z_size, enum graph_styles g_style);
 
 /**
+ * Resets the graph to its original state.
+ */
+void graph_reset(graph* g_ref);
+
+/**
  * Frees the memory allocated to the graph.
  */
 void graph_free(graph* g);

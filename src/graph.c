@@ -187,6 +187,28 @@ bool graph_init_node_edges(graph* g_ref, node* n_ref)
 }
 
 /**
+ * Resets the graph to its original state.
+ */
+void graph_reset(graph* g_ref)
+{
+    uint8_t x; // Current x coordinate
+    uint8_t y; // Current y coordinate
+    uint8_t z; // Current z coordinate
+   
+    // Resetting the graph's nodes 
+    for (x = 0; x < (*g_ref)->x_size; x++)
+    {
+        for (y = 0; y < (*g_ref)->y_size; y++)
+        {
+            for (z = 0; z < (*g_ref)->z_size; z++)
+            {
+                node_reset(&(*g_ref)->nodes[x][y][z]);
+            }
+        }
+    }
+}
+
+/**
  * Initialises the graph's nodes. 
  */
 void graph_init_nodes(graph* g_ref)

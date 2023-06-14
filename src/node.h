@@ -31,6 +31,11 @@ typedef struct node_data* node;
 void node_init(node* n_ref, uint8_t x, uint8_t y, uint8_t z);
 
 /**
+ * Resets the node to its original state.
+ */
+void node_reset(node* n_ref);
+
+/**
  * Initialises the node's edges.
  */
 void node_init_edges(node* n_ref, array edges);
