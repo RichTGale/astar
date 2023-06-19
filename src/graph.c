@@ -99,24 +99,37 @@ bool manhattan_relationship(int8_t xoffset, int8_t yoffset, int8_t zoffset)
  * Returns true if the relationship between the provided offsets is
  * consistent with that of diagonal neighbours.
  */
-bool diagonal_relationship(int8_t xoffset, int8_t yoffset, int8_t zoffset)
+bool diagonal_relationship(int8_t xoff, int8_t yoff, int8_t zoff)
 {
     bool is_diagonal = false; // Whether the relationship is diagonal.
 
-    if ((manhattan_relationship(xoffset, yoffset, zoffset)) ||
+    if ((manhattan_relationship(xoff, yoff, zoff)) ||
         (
-        (xoffset ==  1 && yoffset ==  1 && zoffset !=  0) ||
-        (xoffset ==  1 && yoffset ==  0 && zoffset !=  1) ||
-        (xoffset ==  0 && yoffset ==  1 && zoffset !=  1) ||
-        (xoffset == -1 && yoffset == -1 && zoffset !=  0) ||
-        (xoffset == -1 && yoffset ==  0 && zoffset != -1) ||
-        (xoffset ==  0 && yoffset == -1 && zoffset != -1) ||
-        (xoffset ==  1 && yoffset == -1 && zoffset !=  0) ||
-        (xoffset ==  1 && yoffset ==  0 && zoffset != -1) ||
-        (xoffset ==  0 && yoffset ==  1 && zoffset != -1) ||
-        (xoffset == -1 && yoffset ==  1 && zoffset !=  0) ||
-        (xoffset == -1 && yoffset ==  0 && zoffset !=  1) ||
-        (xoffset ==  0 && yoffset == -1 && zoffset !=  1)
+        /* Top layer. */
+        (xoff == -1 && yoff == -1 && zoff != -1) ||
+        (xoff ==  0 && yoff == -1 && zoff != -1) ||
+        (xoff ==  1 && yoff == -1 && zoff != -1) ||
+        (xoff == -1 && yoff == -1 && zoff !=  0) ||
+        (xoff ==  1 && yoff == -1 && zoff !=  0) ||
+        (xoff == -1 && yoff == -1 && zoff !=  1) ||
+        (xoff ==  0 && yoff == -1 && zoff !=  1) ||
+        (xoff ==  1 && yoff == -1 && zoff !=  1) ||
+
+        /* Middle layer. */
+        (xoff ==  -1 && yoff ==  0 && zoff != -1) ||
+        (xoff ==   1 && yoff ==  0 && zoff != -1) ||
+        (xoff ==  -1 && yoff ==  0 && zoff !=  1) ||
+        (xoff ==   1 && yoff ==  0 && zoff !=  1) ||
+
+        /* Bottom layer. */
+        (xoff == -1 && yoff ==  1 && zoff != -1) ||
+        (xoff ==  0 && yoff ==  1 && zoff != -1) ||
+        (xoff ==  1 && yoff ==  1 && zoff != -1) ||
+        (xoff == -1 && yoff ==  1 && zoff !=  0) ||
+        (xoff ==  1 && yoff ==  1 && zoff !=  0) ||
+        (xoff == -1 && yoff ==  1 && zoff !=  1) ||
+        (xoff ==  0 && yoff ==  1 && zoff !=  1) ||
+        (xoff ==  1 && yoff ==  1 && zoff !=  1)
         ))
     {
         is_diagonal = true; // There is a diagonal relationship.
