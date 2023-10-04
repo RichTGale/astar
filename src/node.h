@@ -4,7 +4,7 @@
  * Data structure and procedure declarations for a weighted graph node.
  * 
  * Author: Richard Gale
- * Version: 15th June, 2023
+ * Version: 1.0.0
  */
 
 #ifndef NODE_H

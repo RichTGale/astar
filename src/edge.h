@@ -5,7 +5,7 @@
  * Simulates the an edge of a graph-node.
  * 
  * Author: Richard Gale
- * Version: 30th August, 2022
+ * Version: 1.0.0
  */
 
 #ifndef EDGE_H

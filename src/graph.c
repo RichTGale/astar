@@ -5,7 +5,7 @@
  * weighted graph. 
  *
  * Author: Richard Gale
- * Version: 15th June, 2023
+ * Version: 1.0.0
  */
 
 #include "graph.h"
@@ -80,12 +80,12 @@ bool manhattan_relationship(int8_t xoffset, int8_t yoffset, int8_t zoffset)
 {
     bool is_manhattan = false; // Whether the relationship is manhattan.
 
-    if ((xoffset == 0 && yoffset == 0 && zoffset == 1) ||
-        (xoffset == 0 && yoffset == 1 && zoffset == 0) ||
-        (xoffset == 1 && yoffset == 0 && zoffset == 0) ||
-        (xoffset == 0 && yoffset == 0 && zoffset == -1) ||
-        (xoffset == 0 && yoffset == -1 && zoffset == 0) ||
-        (xoffset == -1 && yoffset == 0 && zoffset == 0))
+    if ((xoffset ==  0 && yoffset ==  0 && zoffset ==  1) ||
+        (xoffset ==  0 && yoffset ==  1 && zoffset ==  0) ||
+        (xoffset ==  1 && yoffset ==  0 && zoffset ==  0) ||
+        (xoffset ==  0 && yoffset ==  0 && zoffset == -1) ||
+        (xoffset ==  0 && yoffset == -1 && zoffset ==  0) ||
+        (xoffset == -1 && yoffset ==  0 && zoffset ==  0))
     {
         is_manhattan = true; // The relationship is manhattan.
     }
@@ -140,9 +140,34 @@ bool diagonal_relationship(int8_t xoff, int8_t yoff, int8_t zoff)
     return is_diagonal;
 }
 
-bool graph_init_node_edges(graph* g_ref, node* n_ref)
+/**
+ * Resets the graph to its original state.
+ */
+void graph_reset(graph* g_ref)
 {
-    array neighbours;   // The neighbouring nodes of the provided node.
+    uint8_t x; // Current x coordinate
+    uint8_t y; // Current y coordinate
+    uint8_t z; // Current z coordinate
+   
+    // Resetting the graph's nodes 
+    for (x = 0; x < (*g_ref)->x_size; x++)
+    {
+        for (y = 0; y < (*g_ref)->y_size; y++)
+        {
+            for (z = 0; z < (*g_ref)->z_size; z++)
+            {
+                node_reset(&(*g_ref)->nodes[x][y][z]);
+            }
+        }
+    }
+}
+
+/**
+ * This function populates the array of neighbours provided to it with
+ * the neighbouring nodes of the node also provided to the function.
+ */
+void collect_neighbours(graph* g_ref, node* n_ref, array* neighbours)
+{
     node* neighbour;    // A node neighbouring the provided node.
     int8_t xoffset;     // X axis coordinate offset.
     int8_t yoffset;     // Y axis coordinate offset.
@@ -151,8 +176,6 @@ bool graph_init_node_edges(graph* g_ref, node* n_ref)
     int16_t ycoord;     // The neighbour's y coordinate.
     int16_t zcoord;     // The neighbour's z coordinate.
 
-    // Preparing the array of neighbours for use.
-    array_init(&neighbours);
 
     // Collecting the neighbours of the provided node.
     for (xoffset = -1; xoffset <= 1; xoffset++)
@@ -174,7 +197,7 @@ bool graph_init_node_edges(graph* g_ref, node* n_ref)
                     // Adding this neighbour to the array of neighbours.
                     neighbour = graph_get_node(*g_ref, (uint8_t) xcoord, 
                                     (uint8_t) ycoord, (uint8_t) zcoord);
-                    array_push_back(&neighbours, neighbour); 
+                    array_push_back(neighbours, neighbour); 
                 }
                 
                 // Collecting diagonal neighbours.
@@ -185,37 +208,43 @@ bool graph_init_node_edges(graph* g_ref, node* n_ref)
                     // Adding this neighbour to the array of neighbours.
                     neighbour = graph_get_node(*g_ref, (uint8_t) xcoord, 
                                     (uint8_t) ycoord, (uint8_t) zcoord);
-                    array_push_back(&neighbours, neighbour); 
+                    array_push_back(neighbours, neighbour); 
                 }
             }
         }
     }
-
-    // Initialising the edges of the neighbours for the node
-    // that was provided to this function.
-    node_init_edges(n_ref, neighbours);
-
-    // Freeing the array of neighbours.
-    array_free(&neighbours);
 }
 
 /**
- * Resets the graph to its original state.
+ * This function initialises the edges of the graph's nodes.
  */
-void graph_reset(graph* g_ref)
+void graph_init_edges(graph* g_ref)
 {
-    uint8_t x; // Current x coordinate
-    uint8_t y; // Current y coordinate
-    uint8_t z; // Current z coordinate
-   
-    // Resetting the graph's nodes 
+    array neighbours;   // The neighbours of the current node
+    uint8_t x;          // Current x coordinate
+    uint8_t y;          // Current y coordinate
+    uint8_t z;          // Current z coordinate
+
+    // Creating the edges of the nodes' neighbours.
     for (x = 0; x < (*g_ref)->x_size; x++)
     {
         for (y = 0; y < (*g_ref)->y_size; y++)
         {
             for (z = 0; z < (*g_ref)->z_size; z++)
             {
-                node_reset(&(*g_ref)->nodes[x][y][z]);
+                // Preparing the array of neighbours for use.
+                array_init(&neighbours);
+
+                // Collect the neighbouring nodes
+                collect_neighbours(g_ref, &(*g_ref)->nodes[x][y][z], 
+                                          &neighbours);
+
+                // Initialise the edges of the neighbours of the 
+                // current node
+                node_init_edges(&(*g_ref)->nodes[x][y][z], neighbours);
+                
+                // Freeing the array of neighbours.
+                array_free(&neighbours);
             }
         }
     }
@@ -248,20 +277,6 @@ void graph_init_nodes(graph* g_ref)
             }
         }
     }
-
-    // Creating the edges of the nodes' neighbours.
-    for (x = 0; x < (*g_ref)->x_size; x++)
-    {
-        for (y = 0; y < (*g_ref)->y_size; y++)
-        {
-            for (z = 0; z < (*g_ref)->z_size; z++)
-            {
-                // Initialising the edges of the node at the 
-                // coordinate {x,y,z}.
-                graph_init_node_edges(g_ref, &(*g_ref)->nodes[x][y][z]);
-            }
-        }
-    }
 }
 
 /**
@@ -282,8 +297,9 @@ void graph_init(graph* g_ref, uint8_t x_size, uint8_t y_size,
     // neighbours of other graph-nodes
     (*g_ref)->g_style = g_style;
 
-    // Initialising the graph nodes.
+    // Initialising the graph's nodes and edges.
     graph_init_nodes(g_ref);
+    graph_init_edges(g_ref);
 }
 
 /**

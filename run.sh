@@ -1,3 +1,8 @@
 #!/bin/bash
 
-./debug/bin/astar.run
+
+DIRECTORY="output"
+
+cd ./build/bin
+./astar.run
+cd ../../

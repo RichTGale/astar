@@ -6,7 +6,7 @@
  * are added to it and removed from it.
  *
  * Author: Richard Gale
- * Version: 30th August, 2022
+ * Version: 1.0.0
  */
 
 #ifndef ARRAY_H

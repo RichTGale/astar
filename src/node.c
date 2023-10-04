@@ -4,7 +4,7 @@
  * Data structure and function definitions for a weighted graph node.
  * 
  * Author: Richard Gale
- * Version: 15th June, 2023
+ * Version: 1.0.0
  */
 
 #include "node.h"
@@ -48,17 +48,18 @@ void node_reset(node* n_ref)
 }
 
 /**
- * Initialises the node's edges.
+ * Initialises the edge of each neighbour of the node providd to the function
+ * the borders on it.
  */
 void node_init_edges(node* n_ref, array neighbours)
 {
     node* neighbour;    // The neighbour the edge belongs to.
-    edge* edges;    // The array of edges
-    uint8_t x;  // x coordinate of the neighbour.
-    uint8_t y;  // y coordinate of the neighbour.
-    uint8_t z;  // z coordinate of the neighbour.
-    uint64_t e; // The index of the current edge.
-    
+    edge* edges;        // The array of edges
+    uint8_t x;          // x coordinate of the node.
+    uint8_t y;          // y coordinate of the node.
+    uint8_t z;          // z coordinate of the node.
+    uint64_t e;         // The index of the current edge.
+
     // Allocating memory for all the edges.
     edges = (edge*) malloc(array_size(neighbours) * sizeof(edge));
 
@@ -74,7 +75,7 @@ void node_init_edges(node* n_ref, array neighbours)
         // TODO: Here is where we determine the cost of moving from the this 
         // node into the neighbouring node. We give the cost to the 
         // neighbouring node's edge.
-        // At the moment, every edge has a cost of 1 (one).
+        // At the moment, every edge has a cost of 1.
         edge_init(&(edges[e]), x, y, z, 1);
         array_push_back(&(*neighbour)->edges, &(edges[e]));
     }

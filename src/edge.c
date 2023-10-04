@@ -5,7 +5,7 @@
  * Simulates the an edge of a graph-node.
  * 
  * Author: Richard Gale
- * Version: 11th March, 2023
+ * Version: 1.0.0
  */
 
 #include "edge.h"

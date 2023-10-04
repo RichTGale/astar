@@ -4,7 +4,7 @@
  * Data-structure and function definitions for a minimum heap.
  * 
  * Author: Richard Gale
- * Version: 30th August, 2022
+ * Version: 1.0.0
  */
 
 #include "min_heap.h"
