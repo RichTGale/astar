@@ -1,11 +1,15 @@
 /**
  * astar.h
  * 
- * Data-structure and procedure declarations for
- * an A* (A Star) search algorithm.
+ * This file contains the data-structure and function prototype declarations
+ * for the astar type.
+ *
+ * The astar type is an implementation of the A* (A Star) search algorithm. It
+ * finds the shortest path between two nodes on a weighted graph.
  * 
  * Author: Richard Gale
- * Version: 1.0.0
+ * Astar version: 1.0.0
+ * File version: 1.0.1
  */
 
 #ifndef ASTAR_H
@@ -21,29 +25,30 @@
 #include "min_heap.h"
 
 /**
- * The astar data-structure.
+ * This is the astar data-structure.
  */
 typedef struct astar_data* astar;
 
 /**
- * Intialises the astar.
+ * This function initialises the astar that is provided to it.
  */
 void astar_init(astar* as_ref, graph* g);
 
 /**
- * Frees the memory allocated to the astar.
+ * This function destroys the astar that is provided to it.
  */ 
 void astar_free(astar* as_ref);
 
 /**
- * Returns an array containing references to the nodes that 
- * make up the shortest path found by the search procedure. 
+ * This function returns an array containing the nodes that make up the
+ * shortest path found by the search function. The array is empty if no path
+ * was found by the search procedure. 
  */
 array astar_get_path(astar as);
 
 /**
- * Search algorithm. Searches for the shortest
- * path from the start node to the end node.
+ * This is the A* search algorithm. It searches for the shortest path from
+ * the start node to the end node.
  */
 void astar_search(astar* as_ref, node* start, node* end);
 

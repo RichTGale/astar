@@ -1,12 +1,15 @@
 /**
  * array.h
  *
- * Data-structure and procedure declarations for a singly-linked-list, 
- * an array that dynamically allocates and frees memory as elements 
- * are added to it and removed from it.
+ * This file contains the public data-structure and function prototype
+ * declarations for the array type. 
+ * 
+ * The array type is a singly-linked list. It dynamically allocates and
+ * de-allocates memory as elements are added to it and removed from it.
  *
+ * Version: 1.0.1
+ * File version: 1.0.1
  * Author: Richard Gale
- * Version: 1.0.0
  */
 
 #ifndef ARRAY_H
@@ -18,65 +21,65 @@
 #include <stdint.h>
 
 /**
- * The array data-structure.
+ * This is the data-structure of the array type.
  */
 typedef struct array_data* array;
 
 /**
- * Inititialises the array.
+ * This function initialises the array provided to it.
  */
-void array_init(array* a_ref);
+void array_init(array* ap);
 
 /**
- * Frees the memory allocated at the provided array reference
- * and any arrays (elements) linked to it.
+ * This function destroys the array provided to it as well as any array
+ * elements linked to it.
  */
-void array_free(array* a_ref);
+void array_free(array* ap);
 
 /**
- * Returns the data in the provided array at the element
- * at the provided index.
+ * This function returns the data stored at the index provided to it from the
+ * array that is also provided to the function.
  */ 
-void* array_get_data(array head, uint64_t index);
+void* array_get_data(array a, uint64_t index);
 
 /**
- * Returns the number of elements in the provided array.
+ * This function returns the number of elements in the array provided to it.
  */
-uint64_t array_size(array head);
+uint64_t array_size(array a);
 
 /**
- * Removes the first element in the array at the provided
- * reference and returns it.
+ * This function removes the first element from the array provided to it, then
+ * returns it.
  */
-void* array_pop_front(array* head_ref);
+void* array_pop_front(array* ap);
 
 /**
- * Removes the last element from the array at the provided
- * reference and returns it.
+ * This function removes the last element from the array provided to it, then 
+ * returns it.
  */
-void* array_pop_back(array* head_ref);
+void* array_pop_back(array* ap);
 
 /**
- * Removes the element at the provided index and returns it.
+ * This function removes the element from the array provided to it which is at
+ * the index provided to the function, then returns it.
  */
-void* array_pop_data(array* head_ref, uint64_t index);
+void* array_pop_data(array* ap, uint64_t index);
 
 /**
- * Adds a new element to the beginning of the array at
- * the provided array reference.
+ * This function adds a new element to the beginning of the array provided
+ * to it.
  */
-void array_push_front(array* head_ref, void* data);
+void array_push_front(array* ap, void* data);
 
 /**
- * Adds a new element to the end of the array at the provided
- * array reference.
+ * This function adds a new element to the end of the array provided to it.
  */
-void array_push_back(array* head_ref, void* data);
+void array_push_back(array* ap, void* data);
 
 /**
- * Sets the data in the element at the provided index of the
- * array at the provided array reference.
+ * This function replaces the data in the array element of the array provided
+ * to the function which is at the index also provided to the function.
  */
-void array_set_data(array* head_ref, uint64_t index, void* data);
+void array_set_data(array* ap, uint64_t index, void* data);
 
 #endif // ARRAY_H

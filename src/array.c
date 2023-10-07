@@ -1,298 +1,432 @@
 /**
  * array.c
  *
- * Data-structure and procedure definitions for a singly-linked-list, 
- * an array that dynamically allocates and frees memory as elements
- * are added to it and removed from it.
+ * This file contains the internal data-structure and function definitions 
+ * for the array type.
  *
+ * The array type is a singly-linked list. It dynamically allocates and
+ * de-allocates memory as elements are added to it and removed from it.
+ *
+ * Version: 1.0.1
+ * File version: 1.0.1
  * Author: Richard Gale
- * Version: 1.0.0
  */
 
 #include "array.h"
 
-// Error codes
-#define INDEX_OUT_OF_BOUNDS_ERROR 1
-#define ARRAY_EMPTY_ERROR 2
-#define ARRAY_FULL_ERROR 3
-
-// Maximum capacity of the array
+/** 
+ * This is the maximum number of elements the array can store.
+ */
 #define MAX_CAPACITY UINT64_MAX
 
 /**
- * Data contained in the array data-structure
+ * This is the internal data-structure of the array type.
  */
 struct array_data {
-	void* data;		// The data that the node contains
-	array next;		// The next element in the array
+    void* data; /* The data that the node contains. */
+    array next; /* The next element in the array. */
 };
 
 /**
- * Inititialises the array.
+ * This function initialises the array provided to it.
  */
-void array_init(array* a_ref)
+void array_init(array* ap)
 {
-	*a_ref = (array) malloc(sizeof(struct array_data));
-	(*a_ref)->data = NULL;
-	(*a_ref)->next = NULL;
+    /* Allocate memory to the array. */
+    *ap = (array) malloc(sizeof(struct array_data));
+
+    /* Initialise internal properties. */
+    (*ap)->data = NULL;
+    (*ap)->next = NULL;
 }
 
 /**
- * Frees the memory allocated at the provided array reference.
+ * This function destroys the array provided to it.
  */
-void array_free_elem(array* a_ref)
+void array_free_elem(array* ap)
 {
-	free(*a_ref);
+    /* De-allocate memory from the array. */
+    free(*ap);
+}
+/**
+ * This function destroys the array provided to it as well as any array
+ * elements linked to it.
+ */
+void array_free(array* ap)
+{
+    /* Check if an array element is linked to the array. */
+    if ((*ap)->next != NULL)
+    {
+        /* Destroy the array element and any elements linked to it. */
+        array_free(&(*ap)->next);
+    }
+
+    /* De-allocate memory from the array. */
+    array_free_elem(ap);
 }
 
 /**
- * Frees the memory allocated at the provided array
- * and any arrays (elements) linked to it.
- */
-void array_free(array* a_ref)
-{
-	if ((*a_ref)->next != NULL)
-	{
-		array_free(&(*a_ref)->next);
-	}
-	array_free_elem(a_ref);
-}
-
-/**
- * Returns the data in the provided array at the element
- * at the provided index.
+ * This function returns the data stored at the index provided to it from the
+ * array that is also provided to the function.
  */ 
-void* array_get_data(array head, uint64_t index)
+void* array_get_data(array a, uint64_t index)
 {
-	uint64_t elem; // The current element of the array. 
+    uint64_t elem;  /* The current element of the array. */ 
 
-	for (elem = 0; elem < index; elem++)
-	{
-		if (head->next != NULL)
-		{
-			head = head->next;
-		} 
-		else
-		{
-			printf("\nERROR: In function array_get_data(): index %d "
-					"out of bounds!\n", index);
-			exit(INDEX_OUT_OF_BOUNDS_ERROR);
-		}
-	}
-	return head->data;
+    /* Move to the appropriate array index. */
+    for (elem = 0; elem < index; elem++)
+    {
+        /* Check if an array element is linked to the current element. */
+        if (a->next != NULL)
+        {
+            /* Move to the next array element. */
+            a = a->next;
+        }
+        else
+        {
+            /* There was no array element linked to the current element,
+             * so print an error and exit the program. */
+            fprintf(stdout,
+                    "\nERROR: In function array_get_data(): index %ld"
+                    " out of bounds!\n", index);
+            exit(EXIT_FAILURE);
+        }
+    }
+    /* Return the data contained in the array element that was at the index
+     * provided to this function. */
+    return a->data;
 }
 
 /**
- * Returns the number of elements in the provided array.
+ * This function returns the number of elements in the array provided to it.
  */
-uint64_t array_size(array head)
+uint64_t array_size(array a)
 {
-    uint64_t size = 0; // The number of elements in the array
+    uint64_t size; /* The number of elements in the array. */
+ 
+    /* Presume the array is empty. */
+    size = 0;
 
-	if (head->data != NULL)
-	{
-		size++;
-		while (head->next != NULL)
-		{
-			size++;
-			head = head->next;
-		}
-	}
-	return size;
+    /* Check if the array element that was supplied to this function contains
+     * any data. */
+    if (a->data != NULL)
+    {
+        /* The array element contains data so count it. */
+        size++;
+
+        /* Check if there are array elements linked to the current array
+         * element. */
+        while (a->next != NULL)
+        {
+            /* The current array element has an element linked to it so
+             * count it. */
+            size++;
+
+            /* Move to the next array element. */
+            a = a->next;
+        }
+    }
+    /* Return the size of the array. */
+    return size;
 }
 
 /**
- * Removes the first element in the array at the provided
- * reference and returns it.
+ * This function removes the first element from the array provided to it, then
+ * returns it.
  */
-void* array_pop_front(array* head_ref)
+void* array_pop_front(array* ap)
 {
-	array next;		// A copy of the array starting from the second element
-	void* front;	// The data contained in the first element
+    /* This is a copy of the array starting from the second element. */
+    array next;
 
-	if (array_size(*head_ref) > 0)
-	{
-		front = (*head_ref)->data;
-		next  = (*head_ref)->next;
-		array_free_elem(head_ref);
-		*head_ref = next;
+    /* This is a copy of the data contained in the array's first element. */
+    void* front; 
 
-		if (*head_ref == NULL)
-		{
-			// Re-initializing the array because we just destroyed the head
-			array_init(head_ref);
-		}
-	} 
-	else
-	{
-		printf("\nERROR: In function arrary_pop_front: Attempting to pop " 
-				"front of empty array!\n");
-		exit(ARRAY_EMPTY_ERROR);
-	}
-	return front;
+    /* Check if the array is storing any data. */
+    if (array_size(*ap) > 0)
+    {
+        /* Copy the data stored in the first element of the array. */
+        front = (*ap)->data;
+
+        /* Copy the second element of the array. */
+        next  = (*ap)->next;
+
+        /* Destroy the first element. */ 
+        array_free_elem(ap);
+
+        /* Point the head at the second element. */ 
+        *ap = next;
+
+        /* The array provided to this function may have contained only one
+         * element. If this was the case, then initialise the element we just
+         * stored at the array head, which was previously the uninitialised
+         * second element. */
+        if (*ap == NULL)
+        {
+            /* Initialise the array head. */
+            array_init(ap);
+        }
+    }
+    else
+    {
+        /* The array passed to this function has a size of zero so print an
+         * error and exiting the program. */
+        fprintf(stdout,
+                "\nERROR: In function array_pop_front: Attempting to pop " 
+                "front of empty array!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    /* Return the first element of the array that was passed to this
+     * function. */
+    return front;
 }
 
 /**
- * Removes the last element from the array at the provided
- * reference and returns it.
+ * This function removes the last element from the array provided to it, then 
+ * returns it.
  */
-void* array_pop_back(array* head_ref)
-{
-	void* back;		// The data contained in the back element
-	uint64_t size;		// The number of elements in the array
+void* array_pop_back(array* ap)
+{ 
+    /* This is the data contained in the last element of the array. */
+    void* back;
 
-	size = array_size(*head_ref);
+    /* This is the number of elements in the array. */
+    uint64_t size;
 
-	if (size > 0)
-	{
-		while ((*head_ref)->next != NULL)
-		{
-			head_ref = &(*head_ref)->next;
-		}
+    /* Get the size of the array. */
+    size = array_size(*ap);
 
-		back = (*head_ref)->data;
-		array_free_elem(head_ref);
+    /* Check if there is any data stored in the array. */
+    if (size > 0)
+    {
+        /* Loop to the last element in the array. */
+        while ((*ap)->next != NULL)
+        {
+            /* Move to the next element. */
+            ap = &(*ap)->next;
+        }
 
-		if (size > 1)
-		{
-			*head_ref = NULL;
-		} 
-		else
-		{
-			// Re-initializing the array because we just destroyed the head
-			array_init(head_ref);
-		}
-	} 
-	else
-	{
-		printf("\nERROR: In function array_pop_back: Attempting to pop "
-				"back of empty array!\n");
-		exit(ARRAY_EMPTY_ERROR);
-	}
+        /* Copy the data stored in the last element of the array. */
+        back = (*ap)->data;
 
-	return back;
+        /* Destroy the last element in the array. */
+        array_free_elem(ap);
+
+        /* Deal with the element we just destroyed. */
+        if (size > 1)
+        {
+            /* Re-initialising the previous array element's "next" property. */
+            *ap = NULL;
+        }
+        else
+        {
+	        /* The array provided to this function may have contained only one
+	         * element. If this was the case, then initialise the first
+             * element because we just destroyed it. */
+            array_init(ap);
+        }
+    }
+    else
+    {
+        /* There was no data stored in the array provided to this function,
+         * so print an error and exit the program. */
+        fprintf(stdout,
+                "\nERROR: In function array_pop_back: Attempting to pop "
+                "back of empty array!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    /* Return the data that was stored in the last element of the array
+     * provided to this function. */
+    return back;
 }
 
 /**
- * Removes the element at the provided index and returns it.
+ * This function removes the element from the array provided to it which is at
+ * the index provided to the function, then returns it.
  */
-void* array_pop_data(array* head_ref, uint64_t index)
+void* array_pop_data(array* ap, uint64_t index)
 {
-	array next;	// A copy of the array starting from the second element.
-	void* data;	// The data to return.
-	uint64_t size = array_size(*head_ref); // The size of the array.
-	uint64_t elem; // The current element.
+    /* This is a copy of the array starting from the element linked to the
+     * element at the index provided to this function. */
+    array next;
 
-	if (index < size)
-	{
-		for (elem = 0; elem < size; elem++)
-		{
-			if (elem == index)
-			{
-				data = (*head_ref)->data;
-				next  = (*head_ref)->next;
-				array_free_elem(head_ref);
-				*head_ref = next;
-				size = 0;	// Setting size to zero to break from the loop.
-			}
-			else
-			{
-				head_ref = &(*head_ref)->next;
-			}
-		}
-	}
-	else
-	{
-		printf("\nERROR: In function array_pop_data(): index %d out "
-				"of bounds!\n", index);
-		exit(INDEX_OUT_OF_BOUNDS_ERROR);
-	}
-	return data;
+    /* This is the data contained in the array element at the index provided to
+     * this function. */
+    void* data;
+
+    /* This is the size of the array that was provided to this function. */
+    uint64_t size;
+
+    /* This is the index of the current element of the array. */
+    uint64_t elem;
+
+    /* Get the size of the array. */
+    size = array_size(*ap);
+    
+    /* Check if the index passed to this function is within the bounds
+     * of the array. */    
+    if (index < size)
+    {
+        /* Move to the target array element. */
+        for (elem = 0; elem < size; elem++)
+        {
+            if (elem == index)
+            {
+                /* Copy the data stored at the target element. */
+                data = (*ap)->data;
+
+                /* Copy the array element linked to the target element. */
+                next  = (*ap)->next;
+
+                /* De-allocate the memory of the target element. */
+                array_free_elem(ap);
+
+                /* Point the array head to the element that was linked to the
+                 * target element.*/
+                *ap = next;
+
+                /* End the loop. */
+                size = 0;
+            }
+            else
+            {
+                /* Move to the next element of the array. */
+                ap = &(*ap)->next;
+            }
+        }
+    }
+    else
+    {
+        /* The index passed to this function was not within the bounds
+         * of the array, so print an error message and exit the program. */
+        fprintf(stdout,
+                "\nERROR: In function array_pop_data(): index %ld out "
+                "of bounds!\n", index);
+        exit(EXIT_FAILURE);
+    }
+
+    /* Return the data that was stored at the target array element. */
+    return data;
 }
 
 /**
- * Adds a new element to the beginning of the array at
- * the provided array reference.
+ * This function adds a new element to the beginning of the array provided
+ * to it.
  */
-void array_push_front(array* head_ref, void* data)
+void array_push_front(array* ap, void* data)
 {
-	array new;	// The new element to be added to the list
+    /* This is the new element to be added to the array. */
+    array new;  
 
-	if (array_size(*head_ref) < MAX_CAPACITY)
-	{
-		if ((*head_ref)->data == NULL)
-		{
-			(*head_ref)->data = data;
-		} 
-		else
-		{
-			array_init(&new);
-			new->data = data;
-			new->next = *head_ref;
-			*head_ref = new;
-		}
-	}
-	else
-	{
-		printf("\nERROR: In function array_push_front(): Array reached "
-				"maximum capacity!\n");
-		exit(ARRAY_FULL_ERROR);
-	}
+    /* Check if there is enough space in the array to add a new element. */
+    if (array_size(*ap) < MAX_CAPACITY)
+    {
+        /* Check if the array is empty. */
+        if ((*ap)->data == NULL)
+        {
+            /* There was no data stored in the array so store the data in the
+             * first element. */
+            (*ap)->data = data;
+        }
+        else
+        {
+            /* There was already data in the first element of the array, so
+             * intialise the new element.*/
+            array_init(&new);
+
+            /* Store the data in the new array element. */
+            new->data = data;
+
+            /* Link the first element of the array to the new element
+             * that was just created. */
+            new->next = *ap;
+
+            /* Point the head of the array to the new element. */
+            *ap = new;
+        }
+    }
+    else
+    {
+        /* There is no space in the array to add a new element so we print an
+         * error message and exit the program. */
+        fprintf(stdout,
+                "\nERROR: In function array_push_front(): Array reached "
+                "maximum capacity!\n");
+        exit(EXIT_FAILURE);
+    }
 }
 
 /**
- * Adds a new element to the end of the array at the provided
- * array reference.
+ * This function adds a new element to the end of the array provided to it.
  */
-void array_push_back(array* head_ref, void* data)
+void array_push_back(array* ap, void* data)
 {
-	if (array_size(*head_ref) < MAX_CAPACITY)
-	{
-		if ((*head_ref)->data == NULL)
-		{
-			(*head_ref)->data = data;
-		}
-		else
-		{
-			while ((*head_ref)->next != NULL)
-			{
-				head_ref = &(*head_ref)->next;
-			}
-			array_init(&(*head_ref)->next);
-			(*head_ref)->next->data = data;
-		}
-	}
-	else
-	{
-		printf("\nERROR: In function array_push_back(): Array reached "
-				"maximum capacity!\n");
-		exit(ARRAY_FULL_ERROR);
-	}
+    /* Check if there is enough space in the array to store a new element. */
+    if (array_size(*ap) < MAX_CAPACITY)
+    {
+        /* Check if the array is empty. */
+        if ((*ap)->data == NULL)
+        {
+            /* There was no data stored in the array so store the data in the
+             * first element. */
+            (*ap)->data = data;
+        }
+        else
+        {
+            /* There was already data in the array so we are move to the
+             * last element. */
+            while ((*ap)->next != NULL)
+            {
+                ap = &(*ap)->next;
+            }
+
+            /* Initialise a new element of the array. */
+            array_init(&(*ap)->next);
+
+            /* Store the data in the newly initialised element. */
+            (*ap)->next->data = data;
+        }
+    }
+    else
+    {
+        /* There was no space in the array to store a new element so print an
+         * error message and exit the program. */
+        fprintf(stdout,
+                "\nERROR: In function array_push_back(): Array reached "
+                "maximum capacity!\n");
+        exit(EXIT_FAILURE);
+    }
 }
 
 /**
- * Sets the data in the element at the provided index of the
- * array at the provided array reference.
+ * This function replaces the data in the array element of the array provided
+ * to the function which is at the index also provided to the function.
  */
-void array_set_data(array* head_ref, uint64_t index, void* data)
+void array_set_data(array* ap, uint64_t index, void* data)
 {
-	uint64_t elem; // The current element
+    /* This is the current array index. */
+    uint64_t elem; 
 
-	for (elem = 0; elem < index; elem++)
-	{
-		if ((*head_ref)->next != NULL)
-		{
-			head_ref = &(*head_ref)->next;
-		} 
-		else
-		{
-			printf("\nERROR: In function array_set_data(): index %d "
-					"out of bounds!\n", index);
-			exit(INDEX_OUT_OF_BOUNDS_ERROR);
-		}
-	}
-	(*head_ref)->data = data;
+    /* Move to the target array element. */
+    for (elem = 0; elem < index; elem++)
+    {
+        if ((*ap)->next != NULL)
+        {
+            ap = &(*ap)->next;
+        }
+        else
+        {
+            /* The index provided to the function is beyond the bounds of the 
+             * array so print an error message and exit the program. */
+            fprintf(stdout,
+                    "\nERROR: In function array_set_data(): index %ld "
+                    "out of bounds!\n", index);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    /* Replace the data at the target array element. */
+    (*ap)->data = data;
 }
-
-
-
