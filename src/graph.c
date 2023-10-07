@@ -8,7 +8,7 @@
  * for graph-related search/path finding algorithms. This one was written
  * for use with an A* (Astar) search algorithm.
  *
- * Astar version: 1.0.0
+ * Version: 1.0.0
  * File version: 1.0.1
  * Author: Richard Gale
  */

@@ -8,8 +8,8 @@
  *
  * This node was written for use in an A* (Astar) search algorithm.
  * 
- * Node version: 1.0.0
- * File version: 1.0.0
+ * Version: 1.0.0
+ * File version: 1.0.1
  * Author: Richard Gale
  */
 

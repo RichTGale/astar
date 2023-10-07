@@ -12,7 +12,7 @@
  * This minimum heap was written for use as the openset/priority queue in an
  * A* (Astar) search algorithm.
  * 
- * Astar version: 1.0.0
+ * Version: 1.1.0
  * File version: 1.0.1
  * Author: Richard Gale
  */

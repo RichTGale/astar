@@ -7,9 +7,9 @@
  * The astar type is an implementation of the A* (A Star) search algorithm. It
  * finds the shortest path between two nodes on a weighted graph.
  * 
- * Author: Richard Gale
- * Astar version: 1.0.0
+ * Version: 1.0.0
  * File version: 1.0.1
+ * Author: Richard Gale
  */
 
 #ifndef ASTAR_H

@@ -7,7 +7,7 @@
  * An edge represents a distance between two nodes on a weighted graph, or the
  * cost to travel between the two nodes.
  * 
- * Astar version: 1.0.0
+ * Version: 1.0.0
  * File version: 1.0.1
  * Author: Richard Gale
  */

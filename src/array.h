@@ -7,7 +7,7 @@
  * The array type is a singly-linked list. It dynamically allocates and
  * de-allocates memory as elements are added to it and removed from it.
  *
- * Version: 1.0.1
+ * Version: 1.0.0
  * File version: 1.0.1
  * Author: Richard Gale
  */
