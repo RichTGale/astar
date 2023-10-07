@@ -1,11 +1,15 @@
 /**
  * edge.h
  * 
- * Data-structure and function declarations for an edge.
- * Simulates the an edge of a graph-node.
+ * This file contains the data-structure and function prototype declarations
+ * for an edge.
+ *
+ * An edge represents a distance between two nodes on a weighted graph, or the
+ * cost to travel between the two nodes.
  * 
+ * Astar version: 1.0.0
+ * File version: 1.0.1
  * Author: Richard Gale
- * Version: 1.0.0
  */
 
 #ifndef EDGE_H
@@ -15,37 +19,40 @@
 #include <stdint.h>
 
 /**
- * The edge data-structure.
+ * This is the edge data-structure.
  */
 typedef struct edge_data* edge;
 
 /**
- * Initialises the edge. 
+ * This function initialises the edge provided to it.. 
  */
 void edge_init(edge* e_ref, uint8_t x, uint8_t y, uint8_t z, uint8_t w);
 
 /**
- * Frees the memory allocated to the edge. 
+ * This function destroys the edge provided to it.
  */
 void edge_free(edge* e_ref);
 
 /**
- * Returns the x coordinate of the neighbour this edge is against.
+ * This function returns the x coordinate of the node the edge provided to
+ * the function belongs to.
  */
 uint8_t edge_get_x(edge e);
 
 /**
- * Returns the y coordinate of the neighbour this edge is against.
+ * This function returns the y coordinate of the node the edge provided to
+ * the function belongs to.
  */
 uint8_t edge_get_y(edge e);
 
 /**
- * Returns the z coordinate of the neighbour this edge is against.
+ * This function returns the z coordinate of the node the edge provided to
+ * the function belongs to.
  */
 uint8_t edge_get_z(edge e);
 
 /**
- * Returns the weight of the edge.
+ * This function returns the weight of the edge provided to it.
  */
 uint8_t edge_get_w(edge e);
 

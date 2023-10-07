@@ -1,11 +1,16 @@
 /**
  * graph.h
  * 
- * Data-structure and procedure declarations for a 
- * three-dimensional weighted graph.
+ * This file contains the data-structure and function prototype declarations
+ * for the graph type.
+ *
+ * The graph type is an up to 3 dimentional weighted graph. It can be used
+ * for graph-related search/path finding algorithms. This one was written
+ * for use with an A* (Astar) search algorithm.
  * 
+ * Astar version: 1.0.0
+ * File version: 1.0.1
  * Author: Richard Gale
- * Version: 1.0.0
  */
 
 #ifndef GRAPH_H
@@ -20,41 +25,45 @@
 #include "node.h"
 
 /**
- * Defines for the way in which a graph-node will be considered 
- * the neighbour of another graph-node.
+ * These are the identities of ways a graph-node will be considered the
+ * neighbour of another graph-node.
  */
 enum graph_styles { MANHATTAN, DIAGONAL };
 
 /**
- * The graph data structure.
+ * This is graph data structure.
  */
 typedef struct graph_data* graph;
 
 /**
- * Initialises the graph.
+ * This function initialises the graph provided to it.
  */
 void graph_init(graph* g_ref, uint8_t x_size, uint8_t y_size, 
                         uint8_t z_size, enum graph_styles g_style);
 
 /**
- * Resets the graph to its original state.
- */
-void graph_reset(graph* g_ref);
-
-/**
- * Frees the memory allocated to the graph.
+ * This function destroys the graph provided to it.
  */
 void graph_free(graph* g);
 
 /**
- * Returns a reference to the graph-node at the provided coordinate.
+ * This function returns a reference to the graph-node at the provided
+ * coordinates.
  */
 node* graph_get_node(graph g, uint8_t x, uint8_t y, uint8_t z);
 
 /**
- * Returns the graph's graph_style.
+ * This function returns the graph's graph_style whic is the relationship
+ * between the graph's nodes.
  */
 enum graph_styles graph_get_style(graph g);
+
+/**
+ * This function resets the graph to its original state so it can be searched
+ * again. 
+ */
+void graph_reset(graph* g_ref);
+
 
 /**
  * Adds a connection from one graph node to another, considering 
@@ -71,7 +80,7 @@ void graph_add_edge(node* from_ref, node* to_ref, uint8_t weight);
 void graph_remove_edge(node* from_ref, node* to_ref);
 
 /**
- * Prints the graph.
+ * This function prints the graph.
  */
 void graph_print(graph g);
 

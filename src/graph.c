@@ -1,155 +1,135 @@
 /**
  * graph.c
  * 
- * Data-structure and procedure declarations for a three-dimensional 
- * weighted graph. 
+ * This file contains the internal data-structure and procedure definitions
+ * for the graph type.
  *
+ * The graph type is an up to 3 dimentional weighted graph. It can be used
+ * for graph-related search/path finding algorithms. This one was written
+ * for use with an A* (Astar) search algorithm.
+ *
+ * Astar version: 1.0.0
+ * File version: 1.0.1
  * Author: Richard Gale
- * Version: 1.0.0
  */
 
 #include "graph.h"
 
-#define INVALID_COORDINATE_ERROR 1
-
 /**
- * The data contained within the graph data-structure.
+ * This is the internal data structure of the graph type.
  */
 struct graph_data {
-    node*** nodes;     // The nodes that make up the graph.
-    uint8_t x_size;    // The size of the x axis.
-    uint8_t y_size;    // The size of the y axis.
-    uint8_t z_size;    // The size of the z axis.
-
-    // The way in which a graph-node will be considered a 
-    // neighbour of another graph-node.
-    enum graph_styles g_style;  
+    node*** nodes;              /* The nodes that make up the graph. */
+    uint8_t x_size;             /* The size of the x axis. */
+    uint8_t y_size;             /* The size of the y axis. */
+    uint8_t z_size;             /* The size of the z axis. */
+    enum graph_styles g_style;  /* The relationship between neighbour nodes. */ 
 };
 
+/* Function prototype declarations. */
+void graph_init_nodes(graph* g_ref);
+void graph_init_edges(graph* g_ref);
+bool graph_valid_coord(graph g, int16_t x , int16_t y , int16_t z);
+
 /**
- * Returns true if the provided coordinate is within the bounds of the graph.
+ * This function initialises the graph provided to it.
  */
-bool graph_valid_coord(graph g, int16_t x , int16_t y , int16_t z)
+void graph_init(graph* g_ref, uint8_t x_size, uint8_t y_size, 
+                              uint8_t z_size, enum graph_styles g_style)
 {
-    // Whether the coordinate is within the bounds of the graph.
-    bool is_valid_coord = false;
+    /* Allocate memory to the graph. */
+    *g_ref = (graph) malloc(sizeof(struct graph_data));
 
-    if (x >= 0 && x < (int16_t) g->x_size &&
-        y >= 0 && y < (int16_t) g->y_size &&
-        z >= 0 && z < (int16_t) g->z_size)
-    {
-        // The provided coordinate is withn the bounds of the graph.
-        is_valid_coord = true;
-    }
-
-    // Returning whether the coordinate was within the bounds of the graph.
-    return is_valid_coord;
+    /* Initialise the graph's properties. */
+    (*g_ref)->x_size = x_size;
+    (*g_ref)->y_size = y_size;
+    (*g_ref)->z_size = z_size;
+    (*g_ref)->g_style = g_style;
+    graph_init_nodes(g_ref);
+    graph_init_edges(g_ref);
 }
 
 /**
- * Returns a reference to the graph-node at the provided coordinate.
+ * This function destroys the graph provided to it.
+ */
+void graph_free(graph* g_ref)
+{
+    uint8_t x; /* The current x coordinate. */
+    uint8_t y; /* The current y coordinate. */
+    uint8_t z; /* The current z coordinate. */
+
+    /* Destroying the nodes. */
+    for (x = 0; x < (*g_ref)->x_size; x++)
+    {
+        for (y = 0; y < (*g_ref)->y_size; y++)
+        {
+            for (z = 0; z < (*g_ref)->z_size; z++)
+            {
+                /* Destrying the current node. */
+                node_free(&(*g_ref)->nodes[x][y][z]);
+            }
+            /* De-allocating memory from the z axis. */
+            free((*g_ref)->nodes[x][y]);
+        }
+        /* De-allocating memory from the y axis. */
+        free((*g_ref)->nodes[x]);
+    }
+    /* De-allocating memory from the x axis. */
+    free((*g_ref)->nodes);
+
+    /* De-allocating memory from the graph. */
+    free(*g_ref);
+}
+
+/**
+ * This function returns a reference to the graph-node at the provided
+ * coordinates.
  */
 node* graph_get_node(graph g, uint8_t x, uint8_t y, uint8_t z)
 {
-    node* n;    // A reference to the node at the provided corrdinate.
+    node* n;    /* The reference to the node at the provided corrdinate. */
 
+    /* Check if the coordinates are within the bounds of the graph. */
     if (graph_valid_coord(g, (int16_t) x, (int16_t) y, (int16_t) z))
     {
-        // The provided coordinate is within the bounds of the graph
-        // so we are assigning its address to our pointer.
+        /* The coordinate is within the bounds of the grap so get the
+         * reference to the node at those coordinates. */
         n = &(g->nodes[x][y][z]);
     }
     else
     {
-        // The provided coordinates are not within the bounds of the graph
-        // so we're printing an error message and exiting.
-        printf("\nERROR: In function graph_get_node(): "
-                "Invalid node coordinates: { %d, %d, %d }!\n", x, y, z);
-        exit(INVALID_COORDINATE_ERROR);
+        /* The coordinates are not within the bounds of the graph so
+         * print an error message and exit the program. */
+        printf("\nERROR: In function graph_get_node(): Invalid node" 
+                " coordinates: { %d, %d, %d }!\n", x, y, z);
+        exit(EXIT_FAILURE);
     }
 
-    // Returning the reference to the node at the provided coordinates.
+    /* Return the reference to the node at the coordinates. */
     return n;
 }
 
 /**
- * Returns true if the relationship between the provided offsets is
- * consistent with that of manhattan neighbours.
+ * This function returns the graph's graph_style whic is the relationship
+ * between the graph's nodes.
  */
-bool manhattan_relationship(int8_t xoffset, int8_t yoffset, int8_t zoffset)
+enum graph_styles graph_get_style(graph g)
 {
-    bool is_manhattan = false; // Whether the relationship is manhattan.
-
-    if ((xoffset ==  0 && yoffset ==  0 && zoffset ==  1) ||
-        (xoffset ==  0 && yoffset ==  1 && zoffset ==  0) ||
-        (xoffset ==  1 && yoffset ==  0 && zoffset ==  0) ||
-        (xoffset ==  0 && yoffset ==  0 && zoffset == -1) ||
-        (xoffset ==  0 && yoffset == -1 && zoffset ==  0) ||
-        (xoffset == -1 && yoffset ==  0 && zoffset ==  0))
-    {
-        is_manhattan = true; // The relationship is manhattan.
-    }
-
-    // Returning whether the relationship of the provided offsets is
-    // consistent with that of manhattan neighbours.
-    return is_manhattan;
+    /* Return the relationship between the graph's nodes. */
+    return g->g_style;
 }
 
 /**
- * Returns true if the relationship between the provided offsets is
- * consistent with that of diagonal neighbours.
- */
-bool diagonal_relationship(int8_t xoff, int8_t yoff, int8_t zoff)
-{
-    bool is_diagonal = false; // Whether the relationship is diagonal.
-
-    if ((manhattan_relationship(xoff, yoff, zoff)) ||
-        (
-        /* Top layer. */
-        (xoff == -1 && yoff == -1 && zoff != -1) ||
-        (xoff ==  0 && yoff == -1 && zoff != -1) ||
-        (xoff ==  1 && yoff == -1 && zoff != -1) ||
-        (xoff == -1 && yoff == -1 && zoff !=  0) ||
-        (xoff ==  1 && yoff == -1 && zoff !=  0) ||
-        (xoff == -1 && yoff == -1 && zoff !=  1) ||
-        (xoff ==  0 && yoff == -1 && zoff !=  1) ||
-        (xoff ==  1 && yoff == -1 && zoff !=  1) ||
-
-        /* Middle layer. */
-        (xoff ==  -1 && yoff ==  0 && zoff != -1) ||
-        (xoff ==   1 && yoff ==  0 && zoff != -1) ||
-        (xoff ==  -1 && yoff ==  0 && zoff !=  1) ||
-        (xoff ==   1 && yoff ==  0 && zoff !=  1) ||
-
-        /* Bottom layer. */
-        (xoff == -1 && yoff ==  1 && zoff != -1) ||
-        (xoff ==  0 && yoff ==  1 && zoff != -1) ||
-        (xoff ==  1 && yoff ==  1 && zoff != -1) ||
-        (xoff == -1 && yoff ==  1 && zoff !=  0) ||
-        (xoff ==  1 && yoff ==  1 && zoff !=  0) ||
-        (xoff == -1 && yoff ==  1 && zoff !=  1) ||
-        (xoff ==  0 && yoff ==  1 && zoff !=  1) ||
-        (xoff ==  1 && yoff ==  1 && zoff !=  1)
-        ))
-    {
-        is_diagonal = true; // There is a diagonal relationship.
-    }
-
-    // Returning whether the relationship of the provided offsets is
-    // consistent with that of diagonal neighbours.
-    return is_diagonal;
-}
-
-/**
- * Resets the graph to its original state.
+ * This function resets the graph to its original state so it can be searched
+ * again. 
  */
 void graph_reset(graph* g_ref)
 {
-    uint8_t x; // Current x coordinate
-    uint8_t y; // Current y coordinate
-    uint8_t z; // Current z coordinate
+    uint8_t x; /* Current x coordinate. */
+    uint8_t y; /* Current y coordinate. */
+    uint8_t z; /* Current z coordinate. */
    
-    // Resetting the graph's nodes 
+    /* Reset the graph's nodes. */ 
     for (x = 0; x < (*g_ref)->x_size; x++)
     {
         for (y = 0; y < (*g_ref)->y_size; y++)
@@ -163,49 +143,139 @@ void graph_reset(graph* g_ref)
 }
 
 /**
+ * This function adds an edge to a graph node, making it be considered the
+ * neighbour of another.
+ * NOTE: This creates a one-way connection.
+ */
+void  graph_add_edge(node* from_ref, node* to_ref, uint8_t weight)
+{
+    /* Add the edge. */
+    node_add_edge(from_ref, to_ref, weight);
+}
+
+/**
+ * This function removes an edge from a graph node, stopping it from being 
+ * considered the neighbour of another.
+ * NOTE: This creates a one-way removal.
+ */
+void graph_remove_edge(node* from_ref, node* to_ref) 
+{
+    /* Remove the edge. */
+    node_remove_edge(from_ref, to_ref);
+}
+
+/**
+ * This function returns true if the provided coordinates are within the
+ * bounds of the graph.
+ */
+bool graph_valid_coord(graph g, int16_t x , int16_t y , int16_t z)
+{
+    /* Return whether the coordinates are within the bounds of the graph. */
+    return  x >= 0 && x < (int16_t) g->x_size &&
+            y >= 0 && y < (int16_t) g->y_size &&
+            z >= 0 && z < (int16_t) g->z_size;
+}
+
+
+/**
+ * This function returns true if the relationship between the provided offsets
+ * is consistent with that of manhattan neighbours.
+ */
+bool manhattan_relationship(int8_t xoffset, int8_t yoffset, int8_t zoffset)
+{
+    /* Return whether the relationship is manhattan. */
+    return  (xoffset ==  0 && yoffset ==  0 && zoffset ==  1) ||
+            (xoffset ==  0 && yoffset ==  1 && zoffset ==  0) ||
+            (xoffset ==  1 && yoffset ==  0 && zoffset ==  0) ||
+            (xoffset ==  0 && yoffset ==  0 && zoffset == -1) ||
+            (xoffset ==  0 && yoffset == -1 && zoffset ==  0) ||
+            (xoffset == -1 && yoffset ==  0 && zoffset ==  0);
+}
+
+/**
+ * This function returns true if the relationship between the provided offsets
+ * is consistent with that of diagonal neighbours.
+ */
+bool diagonal_relationship(int8_t xoff, int8_t yoff, int8_t zoff)
+{
+    /* Return whether the relationship is diagonal. */
+    return  (manhattan_relationship(xoff, yoff, zoff)) ||
+            (
+            /* Top layer. */
+	        (xoff == -1 && yoff == -1 && zoff != -1) ||
+	        (xoff ==  0 && yoff == -1 && zoff != -1) ||
+	        (xoff ==  1 && yoff == -1 && zoff != -1) ||
+	        (xoff == -1 && yoff == -1 && zoff !=  0) ||
+	        (xoff ==  1 && yoff == -1 && zoff !=  0) ||
+	        (xoff == -1 && yoff == -1 && zoff !=  1) ||
+	        (xoff ==  0 && yoff == -1 && zoff !=  1) ||
+	        (xoff ==  1 && yoff == -1 && zoff !=  1) ||
+	
+	        /* Middle layer. */
+	        (xoff == -1 && yoff ==  0 && zoff != -1) ||
+	        (xoff ==  1 && yoff ==  0 && zoff != -1) ||
+	        (xoff == -1 && yoff ==  0 && zoff !=  1) ||
+	        (xoff ==  1 && yoff ==  0 && zoff !=  1) ||
+	
+	        /* Bottom layer. */
+	        (xoff == -1 && yoff ==  1 && zoff != -1) ||
+	        (xoff ==  0 && yoff ==  1 && zoff != -1) ||
+	        (xoff ==  1 && yoff ==  1 && zoff != -1) ||
+	        (xoff == -1 && yoff ==  1 && zoff !=  0) ||
+	        (xoff ==  1 && yoff ==  1 && zoff !=  0) ||
+	        (xoff == -1 && yoff ==  1 && zoff !=  1) ||
+	        (xoff ==  0 && yoff ==  1 && zoff !=  1) ||
+	        (xoff ==  1 && yoff ==  1 && zoff !=  1)
+	        );
+}
+
+
+/**
  * This function populates the array of neighbours provided to it with
  * the neighbouring nodes of the node also provided to the function.
  */
 void collect_neighbours(graph* g_ref, node* n_ref, array* neighbours)
 {
-    node* neighbour;    // A node neighbouring the provided node.
-    int8_t xoffset;     // X axis coordinate offset.
-    int8_t yoffset;     // Y axis coordinate offset.
-    int8_t zoffset;     // Z axis coordinate offset.
-    int16_t xcoord;     // The neighbour's x coordinate.
-    int16_t ycoord;     // The neighbour's y coordinate.
-    int16_t zcoord;     // The neighbour's z coordinate.
+    node* neighbour;    /* The current node neighbouring the provided node. */
+    int8_t xoffset;     /* The x axis coordinate offset. */
+    int8_t yoffset;     /* The y axis coordinate offset. */
+    int8_t zoffset;     /* The z axis coordinate offset. */
+    int16_t xcoord;     /* The current neighbour's x coordinate. */
+    int16_t ycoord;     /* The current neighbour's y coordinate. */
+    int16_t zcoord;     /* The current neighbour's z coordinate. */
 
 
-    // Collecting the neighbours of the provided node.
+    /* Collect the neighbours of the node. */
     for (xoffset = -1; xoffset <= 1; xoffset++)
     {
         for (yoffset = -1; yoffset <= 1; yoffset++)
         {
             for (zoffset = -1; zoffset <= 1; zoffset++)
             {
-                // Calculating the coordinates of the supposed neighbour.
+                /* Calculate the coordinates of the neighbour. */
                 xcoord = (int16_t) node_get_x(*n_ref) + (int16_t) xoffset;
                 ycoord = (int16_t) node_get_y(*n_ref) + (int16_t) yoffset;
                 zcoord = (int16_t) node_get_z(*n_ref) + (int16_t) zoffset;
                 
-                // Collecting manhattan neighbours.
+                /* Collect manhattan neighbours. */
                 if ((*g_ref)->g_style == MANHATTAN &&
                     manhattan_relationship(xoffset, yoffset, zoffset) &&
                     graph_valid_coord(*g_ref, xcoord, ycoord, zcoord))
                 {
-                    // Adding this neighbour to the array of neighbours.
+                    /* This is a valid neighbour so add it to the array of
+                     * neighbours. */
                     neighbour = graph_get_node(*g_ref, (uint8_t) xcoord, 
                                     (uint8_t) ycoord, (uint8_t) zcoord);
                     array_push_back(neighbours, neighbour); 
                 }
                 
-                // Collecting diagonal neighbours.
+                /* Collect diagonal neighbours. */
                 else if ((*g_ref)->g_style == DIAGONAL &&
                     diagonal_relationship(xoffset, yoffset, zoffset) &&
                     graph_valid_coord(*g_ref, xcoord, ycoord, zcoord))
                 {
-                    // Adding this neighbour to the array of neighbours.
+                    /* This is a valid neighbour so add it to the array of
+                     * neighbours. */
                     neighbour = graph_get_node(*g_ref, (uint8_t) xcoord, 
                                     (uint8_t) ycoord, (uint8_t) zcoord);
                     array_push_back(neighbours, neighbour); 
@@ -220,30 +290,30 @@ void collect_neighbours(graph* g_ref, node* n_ref, array* neighbours)
  */
 void graph_init_edges(graph* g_ref)
 {
-    array neighbours;   // The neighbours of the current node
-    uint8_t x;          // Current x coordinate
-    uint8_t y;          // Current y coordinate
-    uint8_t z;          // Current z coordinate
+    array neighbours;   /* The neighbours of the current node. */
+    uint8_t x;          /* The current x coordinate. */
+    uint8_t y;          /* The current y coordinate. */
+    uint8_t z;          /* The current z coordinate. */
 
-    // Creating the edges of the nodes' neighbours.
+    /* Create the edges of the graph's nodes' neighbours. */
     for (x = 0; x < (*g_ref)->x_size; x++)
     {
         for (y = 0; y < (*g_ref)->y_size; y++)
         {
             for (z = 0; z < (*g_ref)->z_size; z++)
             {
-                // Preparing the array of neighbours for use.
+                /* Initialise the array of neighbours. */
                 array_init(&neighbours);
 
-                // Collect the neighbouring nodes
+                /* Collect the neighbouring nodes. */
                 collect_neighbours(g_ref, &(*g_ref)->nodes[x][y][z], 
                                           &neighbours);
 
-                // Initialise the edges of the neighbours of the 
-                // current node
+                /* Initialise the edges of the neighbours of the current
+                 * node. */
                 node_init_edges(&(*g_ref)->nodes[x][y][z], neighbours);
                 
-                // Freeing the array of neighbours.
+                /* Destroy the array of neighbours. */
                 array_free(&neighbours);
             }
         }
@@ -251,28 +321,28 @@ void graph_init_edges(graph* g_ref)
 }
 
 /**
- * Initialises the graph's nodes. 
+ * This function initialises the graph's nodes. 
  */
 void graph_init_nodes(graph* g_ref)
 {
-    uint8_t x; // Current x coordinate
-    uint8_t y; // Current y coordinate
-    uint8_t z; // Current z coordinate
+    uint8_t x; /* Current x coordinate. */
+    uint8_t y; /* Current y coordinate. */
+    uint8_t z; /* Current z coordinate. */
 
-    // Allocating memory to the x axis.
+    /* Allocate memory to the x axis. */
     (*g_ref)->nodes = (node***) malloc((*g_ref)->x_size * sizeof(node**));
     for (x = 0; x < (*g_ref)->x_size; x++)
     {
-        // Allocating memory to the y axis.
+        /* Allocate memory to the y axis. */
         (*g_ref)->nodes[x] = (node**) malloc((*g_ref)->y_size * sizeof(node*));
         for (y = 0; y < (*g_ref)->y_size; y++)
         {
-            // Allocating memory to the z axis.
+            /* Allocate memory to the z axis. */
             (*g_ref)->nodes[x][y] = 
                 (node*) malloc((*g_ref)->z_size * sizeof(node));
             for (z = 0; z < (*g_ref)->z_size; z++)
             {
-                // Initialising the node at coordinate {x,y,z}
+                /* Initialise the current node. */
                 node_init(&(*g_ref)->nodes[x][y][z], x, y, z);
             }
         }
@@ -280,97 +350,15 @@ void graph_init_nodes(graph* g_ref)
 }
 
 /**
- * Initialises the graph.
- */
-void graph_init(graph* g_ref, uint8_t x_size, uint8_t y_size, 
-                            uint8_t z_size, enum graph_styles g_style)
-{
-    // Allocating memory for the graph
-    *g_ref = (graph) malloc(sizeof(struct graph_data));
-
-    // Storing the graph dimensions
-    (*g_ref)->x_size = x_size;
-    (*g_ref)->y_size = y_size;
-    (*g_ref)->z_size = z_size;
-
-    // Setting the way in which graph-nodes will be considered
-    // neighbours of other graph-nodes
-    (*g_ref)->g_style = g_style;
-
-    // Initialising the graph's nodes and edges.
-    graph_init_nodes(g_ref);
-    graph_init_edges(g_ref);
-}
-
-/**
- * Frees the memory allocated to the graph.
- */
-void graph_free(graph* g_ref)
-{
-    uint8_t x; // Current x coordinate
-    uint8_t y; // Current y coordinate
-    uint8_t z; // Current z coordinate
-
-    // Freeing the nodes
-    for (x = 0; x < (*g_ref)->x_size; x++)
-    {
-        for (y = 0; y < (*g_ref)->y_size; y++)
-        {
-            for (z = 0; z < (*g_ref)->z_size; z++)
-            {
-                // Freeing the node at coordinate {x,y,z}.
-                node_free(&(*g_ref)->nodes[x][y][z]);
-            }
-            // Freeing the memory allocated to the z axis.
-            free((*g_ref)->nodes[x][y]);
-        }
-        // Freeing the memory allocated to the y axis.
-        free((*g_ref)->nodes[x]);
-    }
-    // Freeing the memory allocated to the x axis.
-    free((*g_ref)->nodes);
-
-    // Freeing the graph
-    free(*g_ref);
-}
-
-/**
- * Returns the graph's graph_style.
- */
-enum graph_styles graph_get_style(graph g)
-{
-    return g->g_style;
-}
-
-/**
- * Adds a connection from one graph node to another, considering 
- * it as a neighbour.
- * Note, this creates a one-way connection.
- */
-void  graph_add_edge(node* from_ref, node* to_ref, uint8_t weight)
-{
-    node_add_edge(from_ref, to_ref, weight);
-}
-
-/**
- * Disconnects one graph node from another, stopping
- * them from considered neighbours.
- * Note, this is a one-way disconnection.
- */
-void graph_remove_edge(node* from_ref, node* to_ref) 
-{
-    node_remove_edge(from_ref, to_ref);
-}
-
-/**
- * Prints the graph.
+ * This function prints the graph.
  */
 void graph_print(graph g)
 {
-    uint8_t x; // Current x coordinate
-    uint8_t y; // Current y coordinate
-    uint8_t z; // Current z coordinate
+    uint8_t x; /* Current x coordinate. */
+    uint8_t y; /* Current y coordinate. */
+    uint8_t z; /* Current z coordinate. */
 
+    /* Print the graph. */
     printf("Graph:\n{\n");
     for (x = 0; x < g->x_size; x++)
     {

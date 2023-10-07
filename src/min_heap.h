@@ -1,10 +1,20 @@
 /**
  * min_heap.h
  * 
- * Data-structure and procedure declarations for a minimum heap.
+ * This file contains the public data-structure and function prototype
+ * declarations for the min_heap type.
  * 
+ * The min_heap type is a minimum heap. It arranges the values that are put 
+ * into it into a binary tree where the values are sorted from the lowest to
+ * the highest, so if you were to take the first value off its top, that value
+ * would be the lowest value in the heap. 
+ * 
+ * This minimum heap was written for use as the openset/priority queue in an
+ * A* (Astar) search algorithm.
+ * 
+ * Astar version: 1.0.0
+ * File version: 1.0.1
  * Author: Richard Gale
- * Version: 1.0.0
  */
 
 #ifndef MIN_HEAP_H
@@ -19,43 +29,43 @@
 #include "node.h"
 
 /**
- * The types of data the min_heap can deal with.
+ * These are the types of data min_heaps can deal with.
  */
-enum heap_types { INTEGER, NODE };
+enum data_type { INTEGER, NODE };
 
 /**
- * The min_heap data structure.
+ * This is the min_heap data structure.
  */
 typedef struct min_heap_data* min_heap;
 
 /**
- * Initialises the min_heap at the provided reference.
+ * This function initialises the min_heap provided to it.
  */
-void min_heap_init(min_heap* mh_ref, enum heap_types t);
+void min_heap_init(min_heap* mh_ref, enum data_type t);
 
 /**
- * Frees the memory allocated to the min_heap at the provided reference.
+ * This function destroys the min_heap provided to it.
  */
 void min_heap_free(min_heap* mh_ref);
 
 /**
- * Returns true if the provided reference to a value is already 
- * in the min_heap.
+ * This function returns true if the value provided to it is already stored by
+ * the min_heap that is also provided to the function.
  */
 bool min_heap_val_exists(min_heap mh, void* val);
 
 /**
- * Returns true if the provided min_heap is empty.
+ * This function returns true if the provided min_heap is empty.
  */
 bool min_heap_is_empty(min_heap mh);
 
 /**
- * Adds a reference to a value to the min_heap.
+ * This function adds a value to the min_heap provided to it.
  */
 void min_heap_add(min_heap* mh_ref, void* data);
 
 /**
- * Removes the minimum value from the heap and returns it
+ * This function removes the minimum value from the heap and returns it.
  */
 void* min_heap_pop_min(min_heap* mh_ref);
 

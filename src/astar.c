@@ -1,72 +1,84 @@
 /**
  * astar.c
  * 
- * Data-structure and procedure definitions for an
- * A* (A Star) search algorithm.
+ * This file contains the internal data-structure and function definitions
+ * for the astar type.
+ *
+ * The astar type is an implementation of the A* (A Star) search algorithm. It
+ * finds the shortest path between two nodes on a weighted graph.
  * 
  * Author: RIchard Gale
- * Version: 1.0.0
+ * Astar version: 1.0.0
+ * File version: 1.0.1
  */
 
 #include "astar.h"
 
 /** 
- * The data contained within the astar data-structure.
+ * This is internal data-structure of the astar type.
  */
 struct astar_data {
-    graph* g_ref;		// The graph.
-    min_heap openset;	// The openset.
-    array path;			// The nodes that make up the shortest path.
+    graph* g_ref;		/* The graph. */
+    min_heap openset;	/* The openset. */
+    array path;			/* The nodes that make up the shortest path. */
 };
 
 /**
- * Intialises the astar.
+ * This function initialises the astar that is provided to it.
  */
 void astar_init(astar* as_ref, graph* g_ref)
 {
+    /* Allocate memory to the astar. */
     *as_ref = (astar) malloc(sizeof(struct astar_data));
+
+    /* Initialise the astar's properties. */
     (*as_ref)->g_ref = g_ref;
     min_heap_init(&(*as_ref)->openset, NODE);
     array_init(&(*as_ref)->path);
 }
 
 /**
- * Frees the memory allocated to the astar.
+ * This function destroys the astar that is provided to it.
  */ 
 void astar_free(astar* as_ref)
 {
+    /* Destroy the astar's properties. */
     min_heap_free(&(*as_ref)->openset);
     array_free(&(*as_ref)->path);
+
+    /* De-allocate memory from the astar. */
     free(*as_ref);
 }
 
 /**
- * Returns a reference to an array containing the nodes
- * that make up the shortest path found by the search procedure. 
+ * This function returns an array containing the nodes that make up the
+ * shortest path found by the search function. The array is empty if no path
+ * was found by the search procedure. 
  */
 array astar_get_path(astar as)
 {
+    /* Return the shortest path. */
     return as->path;
 }
 
 /**
- * Heuristic function.
- * Returns an estimate of the distance between two graph-nodes.
+ * This is astar's heuristic function. This function returns an estimate of
+ * the distance between two graph-nodes.
  */
 uint32_t astar_h(node node_a, node node_b, enum graph_styles style)
 {
-    uint64_t cost;	// The estimated distance between the two nodes
-    uint8_t dx;	// The absolute difference of the x axes.
-    uint8_t dy;	// The absolute difference of the y axes.
-    uint8_t dz;	// The absolute difference of the z axes.
-    uint8_t min; 	// The minimum absolute difference out of all the axes.
+    uint64_t cost;  /* The estimated distance between the two nodes. */
+    uint8_t dx;	    /* The absolute difference of the x axes. */
+    uint8_t dy;	    /* The absolute difference of the y axes. */
+    uint8_t dz;	    /* The absolute difference of the z axes. */
+    uint8_t min; 	/* The minimum absolute difference out of all the axes. */
 	
-    // Calculating the absolute differences of each axis of the two nodes.
+    /* Calculate the absolute differences of each axis of the two nodes. */
     dx = abs(node_get_x(node_a) - node_get_x(node_b));
     dy = abs(node_get_y(node_a) - node_get_y(node_b));
     dz = abs(node_get_z(node_a) - node_get_z(node_b));
 
-    // Calculating the estimated cost
+    /* Estimate the cost. */
     if (style == MANHATTAN)
     {
         cost = dx + dy + dz; 
@@ -78,19 +90,21 @@ uint32_t astar_h(node node_a, node node_b, enum graph_styles style)
         cost = (dx + dy + dz) + (1 - 3) * min;
     }
 
-    // Returning the estimated cost.
+    /* Return the estimated cost. */
     return cost;
 }
 
 /**
- * Reconstructs the shortest path that the search procedure
- * found through the graph that goes from the starting node 
- * to the goal node.
+ * This function reconstructs the shortest path going from the starting node
+ * to the goal node that the search procedure found.
  */
 void astar_reconstruct_path(astar* as, node* start, node* current)
 {
+    /* Add the goal goal node to the array. */
     array_push_front(&(*as)->path, current);
 
+    /* Travel backwards along the path adding each node on it to the
+     * front of the array. */
     while(current != start)
     {
         current = node_get_came_from(*current);
@@ -99,20 +113,21 @@ void astar_reconstruct_path(astar* as, node* start, node* current)
 }
 
 /**
- * Resets the astar to its original state.
+ * This function resets the astar to its original state so it is ready to
+ * search again.
  */
 void astar_reset(astar* as_ref)
 {
-    // Resetting the graph
+    /* Reset the graph */
     graph_reset((*as_ref)->g_ref);
 
-    // Ensuring the priority queue is empty
+    /* Empty the openset. */
     while (!(min_heap_is_empty((*as_ref)->openset)))
     {
         min_heap_pop_min(&(*as_ref)->openset);
     }
 
-    // Ensuring the path is empty
+    /* Empty the previously found path. */
     while (array_size((*as_ref)->path) > 0)
     {
         array_pop_front(&(*as_ref)->path);
@@ -120,8 +135,8 @@ void astar_reset(astar* as_ref)
 }
 
 /**
- * A* search algorithm. Searches for the shortest
- * path from the start node to the end node.
+ * This is the A* search algorithm. It searches for the shortest path from
+ * the start node to the end node.
  */
 void astar_search(astar* as_ref, node* start, node* end)
 {
