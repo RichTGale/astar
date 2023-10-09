@@ -28,7 +28,7 @@
  * These are the identities of ways a graph-node will be considered the
  * neighbour of another graph-node.
  */
-enum graph_styles { MANHATTAN, DIAGONAL };
+enum graph_style { MANHATTAN, DIAGONAL };
 
 /**
  * This is graph data structure.
@@ -39,7 +39,7 @@ typedef struct graph_data* graph;
  * This function initialises the graph provided to it.
  */
 void graph_init(graph* g_ref, uint8_t x_size, uint8_t y_size, 
-                        uint8_t z_size, enum graph_styles g_style);
+                        uint8_t z_size, enum graph_style g_style);
 
 /**
  * This function destroys the graph provided to it.
@@ -56,7 +56,7 @@ node* graph_get_node(graph g, uint8_t x, uint8_t y, uint8_t z);
  * This function returns the graph's graph_style whic is the relationship
  * between the graph's nodes.
  */
-enum graph_styles graph_get_style(graph g);
+enum graph_style graph_get_style(graph g);
 
 /**
  * This function resets the graph to its original state so it can be searched

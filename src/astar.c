@@ -65,7 +65,7 @@ array astar_get_path(astar as)
  * This is astar's heuristic function. This function returns an estimate of
  * the distance between two graph-nodes.
  */
-uint32_t astar_h(node node_a, node node_b, enum graph_styles style)
+uint32_t astar_h(node node_a, node node_b, enum graph_style style)
 {
     uint64_t cost;  /* The estimated distance between the two nodes. */
     uint8_t dx;	    /* The absolute difference of the x axes. */

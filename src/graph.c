@@ -23,7 +23,7 @@ struct graph_data {
     uint8_t x_size;             /* The size of the x axis. */
     uint8_t y_size;             /* The size of the y axis. */
     uint8_t z_size;             /* The size of the z axis. */
-    enum graph_styles g_style;  /* The relationship between neighbour nodes. */ 
+    enum graph_style g_style;  /* The relationship between neighbour nodes. */ 
 };
 
 /* Function prototype declarations. */
@@ -35,7 +35,7 @@ bool graph_valid_coord(graph g, int16_t x , int16_t y , int16_t z);
  * This function initialises the graph provided to it.
  */
 void graph_init(graph* g_ref, uint8_t x_size, uint8_t y_size, 
-                              uint8_t z_size, enum graph_styles g_style)
+                              uint8_t z_size, enum graph_style g_style)
 {
     /* Allocate memory to the graph. */
     *g_ref = (graph) malloc(sizeof(struct graph_data));
@@ -113,7 +113,7 @@ node* graph_get_node(graph g, uint8_t x, uint8_t y, uint8_t z)
  * This function returns the graph's graph_style whic is the relationship
  * between the graph's nodes.
  */
-enum graph_styles graph_get_style(graph g)
+enum graph_style graph_get_style(graph g)
 {
     /* Return the relationship between the graph's nodes. */
     return g->g_style;
