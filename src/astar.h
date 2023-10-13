@@ -20,24 +20,25 @@
 #include <stdint.h>
 
 #include "array.h"
+#include "edge.h"
 #include "node.h"
 #include "graph.h"
 #include "min_heap.h"
 
 /**
- * This is the astar data-structure.
+ * The data-structure of the astar type.
  */
 typedef struct astar_data* astar;
 
 /**
- * This function initialises the astar that is provided to it.
+ * This function intialises the astar provided to it.
  */
-void astar_init(astar* as_ref, graph* g);
+void astar_init(astar* asp, graph* g);
 
 /**
- * This function destroys the astar that is provided to it.
+ * This function destroys the astar provided to it.
  */ 
-void astar_free(astar* as_ref);
+void astar_free(astar* asp);
 
 /**
  * This function returns an array containing the nodes that make up the
@@ -47,9 +48,15 @@ void astar_free(astar* as_ref);
 array astar_get_path(astar as);
 
 /**
+ * This function resets the astar provided to it to its original state so it
+ * is ready to search again.
+ */
+void astar_reset(astar* asp);
+
+/**
  * This is the A* search algorithm. It searches for the shortest path from
  * the start node to the end node.
  */
-void astar_search(astar* as_ref, node* start, node* end);
+void astar_search(astar* asp, node* start, node* end);
 
 #endif // ASTAR_H

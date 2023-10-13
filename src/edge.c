@@ -18,71 +18,61 @@
  * This is the internal data-structure of the edge type.
  */
 struct edge_data {
-    uint8_t x;  /* The x coordinate of the node this edge belongs to. */
-    uint8_t y;  /* The y coordinate of the node this edge belongs to. */
-    uint8_t z;  /* The z coordinate of the node this edge belongs to. */
-    uint8_t w;  /* The weight of the edge. */
+    /* These are the coordinates of the neighbour of the node this edge
+     * belongs to. */
+    void* neighbourp;
+
+    /* This is the weight/cost to move from the neighbour of the the node that
+     * this edge belongs to into the node this edge belongs to. */
+    uint8_t w;
 };
 
 /**
- * This function initialises the edge provided to it.. 
+ * This function initialises the edge provided to it. 
  */
-void edge_init(edge* e_ref, uint8_t x, uint8_t y, uint8_t z, uint8_t w)
+void edge_init(edge* ep, void* neighbourp, uint8_t w)
 {
-    /* Allocate memory to the endge. */
-    *e_ref = (edge) malloc(sizeof(struct edge_data));
+    /* Allocate memory to the edge. */
+    *ep = (edge) malloc(sizeof(struct edge_data));
 
-    /* Initialise the edge's properties. */
-    (*e_ref)->x = x;
-    (*e_ref)->y = y;
-    (*e_ref)->z = z;
-    (*e_ref)->w = w;
+    /* Initialise the edge's internal data. */
+    (*ep)->w = w;
+    (*ep)->neighbourp = neighbourp;
 }
 
 /**
  * This function destroys the edge provided to it.
  */
-void edge_free(edge* e_ref)
+void edge_free(edge* ep)
 {
-    /* De-allocating memory from the edge. */
-    free(*e_ref);
+    /* De-allocate memory from the edge. */
+    free(*ep);
 }
 
 /**
- * This function returns the x coordinate of the node the edge provided to
- * the function belongs to.
+ * This function returns the neighbouring node of the node that the edge
+ * provided to the function belongs to.
  */
-uint8_t edge_get_x(edge e)
+void* edge_get_neighbourp(edge* ep)
 {
-    /* Return the x coordinate. */
-    return e->x;
+    /* Return the neighbouring node of the node the edge belongs to. */
+    return (*ep)->neighbourp;
 }
 
 /**
- * This function returns the y coordinate of the node the edge provided to
- * the function belongs to.
- */
-uint8_t edge_get_y(edge e)
-{
-    /* Return the y coordinate. */
-    return e->y;
-}
-
-/**
- * This function returns the z coordinate of the node the edge provided to
- * the function belongs to.
- */
-uint8_t edge_get_z(edge e)
-{
-    /* Return the z coordinate. */
-    return e->z;
-}
-
-/**
- * This function returns the weight of the edge provided to it.
+ * This function returns the weight of the edge provided it.
  */
 uint8_t edge_get_w(edge e)
 {
-    /* Return the weight. */
+    /* Return the weight of the edge. */
     return e->w;
+}
+
+/**
+ * This function prints information about the edge provided to it.
+ */
+void edge_print(edge e)
+{
+    /* Print information about the edge. */
+    fprintf(stdout, "Edge: { addr:%p w:%d }",  e->neighbourp, e->w);
 }

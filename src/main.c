@@ -26,12 +26,12 @@ int main(int argc, char* argv[])
     node n;         /* The current node on the path. */
 
     /* Initialise and print the graph. */
-    graph_init(&g, 10, 10, 10, MANHATTAN);
+    graph_init(&g, 50, 50, 50, MANHATTAN);
     graph_print(g);
 
     /* Set the start and goal nodes. */
     start = graph_get_node(g, 0, 0, 0);
-    goal  = graph_get_node(g, 9, 9, 9);
+    goal  = graph_get_node(g, 20, 20, 20);
 
     /* Initialise the astar. */
     astar_init(&as, &g);

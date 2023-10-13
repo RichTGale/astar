@@ -1,6 +1,6 @@
-/**
- * graph.h
- * 
+/*
+ * graph.h 
+ *  
  * This file contains the data-structure and function prototype declarations
  * for the graph type.
  *
@@ -30,57 +30,74 @@
  */
 enum graph_style { MANHATTAN, DIAGONAL };
 
+
 /**
- * This is graph data structure.
+ * This is the data-structure of the graph type.
  */
 typedef struct graph_data* graph;
 
 /**
  * This function initialises the graph provided to it.
  */
-void graph_init(graph* g_ref, uint8_t x_size, uint8_t y_size, 
-                        uint8_t z_size, enum graph_style g_style);
+void graph_init(graph* gp, uint8_t x_size, uint8_t y_size, 
+                           uint8_t z_size, enum graph_style gstyle);
 
 /**
  * This function destroys the graph provided to it.
  */
-void graph_free(graph* g);
+void graph_free(graph* gp);
 
 /**
- * This function returns a reference to the graph-node at the provided
- * coordinates.
+ * This function returns the node in the graph provided to it located at the
+ * coordinates also provided to the function.
  */
 node* graph_get_node(graph g, uint8_t x, uint8_t y, uint8_t z);
 
 /**
- * This function returns the graph's graph_style whic is the relationship
- * between the graph's nodes.
+ * This function returns the graph_style property of the graph provided to it.
  */
 enum graph_style graph_get_style(graph g);
 
 /**
- * This function resets the graph to its original state so it can be searched
- * again. 
+ * This function returns the size of the x axis of the graph provided it.
  */
-void graph_reset(graph* g_ref);
+uint8_t graph_get_x_size(graph g);
+
+/**
+ * This function returns the size of the y axis of the graph provided it.
+ */
+uint8_t graph_get_y_size(graph g);
+
+/**
+ * This function returns the size of the z axis of the graph provided it.
+ */
+uint8_t graph_get_z_size(graph g);
+
+/**
+ * This function adds an edge to the "to" node provided to it, making it be
+ * considered a neighbour of the "from" node provided to the function.
+ * Note: This creates a one-way relationship between the nodes. The "from" node
+ * will not be considered a neighbour of the "to" node.
+ */
+void graph_add_edge(node* fromp, node* top, uint8_t weight);
+
+/**
+ * This function removes an edge from the "to" node provided to it, making it
+ * no longer be considered a neighbour of the "from" node provided to the
+ * function.
+ * Note: This destroys the relationship between the nodes one-way only. The
+ * "from" node may still be considered a neighbour of the "to" node.
+ */
+void graph_remove_edge(node* fromp, node* top);
+
+/**
+ * This function resets the graph to its original state.
+ */
+void graph_reset(graph* gp);
 
 
 /**
- * Adds a connection from one graph node to another, considering 
- * it as a neighbour.
- * Note, this creates a one-way connection.
- */
-void graph_add_edge(node* from_ref, node* to_ref, uint8_t weight);
-
-/**
- * Disconnects one graph node from another, stopping
- * them from considered neighbours.
- * Note, this is a one-way disconnection.
- */
-void graph_remove_edge(node* from_ref, node* to_ref);
-
-/**
- * This function prints the graph.
+ * This function prints information about the graph.
  */
 void graph_print(graph g);
 
