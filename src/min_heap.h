@@ -14,6 +14,7 @@
  *
  * custom_type.h
  * --------------------------------------------------
+ * ...
  *
  * typedef struct custom_type_data* custom_type;
  * 
@@ -21,14 +22,15 @@
  * --------------------------------------------------
  * 
  * custom_type.c
- * -------------------------------------------------
+ * --------------------------------------------------
+ * ...
  *
  * struct custom_type_data {
  *     int value;
  * };
  *
  * ...
- * -------------------------------------------------
+ * --------------------------------------------------
  *
  * In the above example, the name of the type's property, value, doesn't matter
  * and is arbitrary. Additionally, the property's type could be changed to
@@ -40,13 +42,13 @@
  * the heap will use. The function needs to be named min_heap_get_val:
  *
  * custom_type.h
- * ------------------------------------------------
+ * --------------------------------------------------
  * ...
  *
- *  int min_heap_get_value(void* data_type);
+ *  int min_heap_get_val(void* data_type);
  *
  * ...
- * ------------------------------------------------
+ * --------------------------------------------------
  *
  * custom_type.c
  * ------------------------------------------------
@@ -60,22 +62,22 @@
  * }
  *
  * ...
- * --------
+ * --------------------------------------------------
  * 
  * 3. An include statement needs to be added to the file min_heap.h that
  * includes your type:
  *
  * min_heap.h
- * ------------------------------------------------
+ * --------------------------------------------------
  * ...
  *  
  * #include "custom_type.h"
  *
  * ...
- * ------------------------------------------------
+ * --------------------------------------------------
  * 
  * Author: Richard Gale
- * Version: 1.0.1
+ * Version: 1.0.2
  */
 
 #ifndef MIN_HEAP_H
