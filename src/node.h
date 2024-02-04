@@ -47,6 +47,12 @@ void node_init(node* np, uint8_t x, uint8_t y, uint8_t z, enum node_type type);
 void node_free(node* np);
 
 /**
+ * This function makes the node type compatible with the min_heap
+ * type.
+ */
+uint64_t min_heap_get_val(void* data_type);
+
+/**
  * This function returns the node on a path created by the astar algorithm
  * that preceeds the node provided to this function on that path.
  */

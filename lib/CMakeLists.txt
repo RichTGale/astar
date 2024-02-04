@@ -6,7 +6,7 @@ add_library (graph ../../src/graph.h ../../src/graph.c)
 add_library (astar ../../src/astar.h ../../src/astar.c)
 
 target_link_libraries(node LINK_PUBLIC array edge)
-target_link_libraries(min_heap LINK_PUBLIC array)
+target_link_libraries(min_heap LINK_PUBLIC array node)
 target_link_libraries(graph LINK_PUBLIC array node)
 target_link_libraries(astar LINK_PUBLIC array node graph min_heap)
 

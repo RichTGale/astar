@@ -45,7 +45,7 @@ void astar_init(astar* asp, graph* gp)
 
     /* Initialise the astar's internal properties. */
     (*asp)->gp = gp;
-    min_heap_init(&(*asp)->openset, NODE);
+    min_heap_init(&(*asp)->openset);
     array_init(&(*asp)->path);
 }
 
